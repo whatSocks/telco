@@ -47,11 +47,11 @@ image::http://i.imgur.com/DvwWxMI.png[example]
 //hide
 [source,cypher]
 ----
-MATCH (a:crew)-[*1]-(b:crew)
+MATCH path = (a1:crew)--(a:crew)-[*1]-(b:crew)--(b2:crew)
 WHERE NOT (a:crew)-[*2..3]-(b:crew)
-RETURN a.name, b.name
+RETURN path
 ----
-//table
+//graph
 
 
 - Change some nodes/connections, demo that it still works
