@@ -26,7 +26,7 @@ CREATE (`1`:crew {crew_id:1, name:'Abeer Fathy'}), (`2`:crew {crew_id:2, name:'A
 //create the crew-crew relationships
 CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`)-[:KNOWS]->(`1`), (`2`)-[:KNOWS]->(`3`), (`2`)-[:KNOWS]->(`4`), (`3`)-[:KNOWS]->(`1`), (`3`)-[:KNOWS]->(`2`), (`3`)-[:KNOWS]->(`5`), (`4`)-[:KNOWS]->(`2`), (`4`)-[:KNOWS]->(`1`), (`4`)-[:KNOWS]->(`5`), (`5`)-[:KNOWS]->(`3`), (`5`)-[:KNOWS]->(`4`)
 ----
-\\graph
+//graph
 
 - Briefly go over the cypher for people are interested in learning cypher
 - The full toy graph will have network information spread across > 30 systems, with daily changes to network infrastructure
