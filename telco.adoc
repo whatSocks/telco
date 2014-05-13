@@ -29,6 +29,9 @@ CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`
 //graph
 
 - Briefly go over the cypher for people are interested in learning cypher
+-- in this example I'm calling the nodes 'resources' and the relationships 'channels'
+-- channels can have 3 different states: 'open', 'closed', or 'broken'
+-- there are two types of nodes: crew (to be changed later) and service
 - The full toy graph will have network information spread across > 30 systems, with daily changes to network infrastructure
 -- now
 -- Will demonstrate that the graph can hold the up-to-date topology for the entire network
@@ -43,9 +46,9 @@ A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, inc
 
 image::http://i.imgur.com/DvwWxMI.png[example]
 
-^ replace this image with an image of this network, update names. 
+_replace this image with an image of this network, update names_
 
-Let's find bridges in our network
+Let's find bridges in our network:
 
 [source,cypher]
 ----
@@ -54,32 +57,47 @@ WHERE NOT (a)-[*2]-(b) AND NOT (a)<--(b)
 RETURN DISTINCT a.crew_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.crew_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`, r0
 ----
 
-_note - edit query and prose below so that we know which end the service is coming from_
+_insert images of the bridges_
 
+_insert description of what's going on at each bridge_ 
 
--- Maybe connections are expensive - how can we add the least amount of connections as possible to avoid bridges? Just mention this and don’t get stuck in the weeds of graph theory
+Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
 === Resilience During Unplanned Network Outages
 
 ==== Introduction
 
-OK, so we’ve got redundancy, more or less. But we still need rapid, automated “what if” analysis to ensure resilience during unplanned network outages"
-- introduce planning for subgraph-fault tolerant routing as very simple problem in small toy networks, but a much gnarlier one in larger complex networks.
-- it might be too slow (both in cypher and for this write-up) to go through and eliminate link by link in the subgraph, but in a small subgraph example it’s doable, so use a small example
--- the 5-node subraph in the next image is a good example
-- Conclude with a nice re-routing plan for the network and point out some weaknesses uncovered by this method
+Let's take a look at the subgraph connected by the bridge between network resource _Abeer Fathy_ and _Aziza Hsuang-tsung_. 
 
-==== Sub-graph Fault Tolerant Routing
+_insert detailed diagram of this subgraph_
+
+The need for additional connections evident: if a drunk driver or nest of squirreles were to eliminate this bridge, the entire subgraph will go down. The next question: Assuming the owner of the netowrk has the funds for only one additional link to the subgraph, what is the optimal location to place it? 
+
+For this example, let's make the following assumptions about the network and the network owners' needs:
+
+- While resource A is communicating with resource B through a channel or set of channels, no other resource can use the channels for the duration of the communication. 
+- Resources, including bridge components _Abeer Fathy_ and _Aziza Hsuang-tsung_, are very robust and are unlikely to fail 
+- When it rains it pours: We are trying to determine where to place additional channels based on the worst case scenario. 
+-- More than one channel will fail at the same time, and we know the channels between resource 3 and 1 and 3 and 2 are in a particularly vulnerable area. 
+-- During crisis all resources will be trying to reach the parent network simultaneously
+
+SOMETHING HERE 
+
+
+
+== Conclusion/Discussion
+
+=== more conclusion copy
+
+conclusion stuff
+
+=== Sub-graph Fault Tolerant Routing
 
 _Subgraph Fault-Tolerant Routing (SFTR)_ is a strategy for planning for the inevitable - resource or connection outage. Sometimes a squirrel builds a nest in part of your network. Although we have to accept that parts of our networks will break, we can also determine which components will be able to reroute and which will have the potential to be catastrophic failures.
 
 L+1 sub-graph routing is a strategy for routing dependable connections in optical networks. In this approach each network is mapped into L distinct sub-graphs resulting from the removal of links (in this example, only one link) from the original network.
 
 A connection from node A to B in this scheme becomes “accepted”–in other words, identified as not potentially catastrophic–only if it is there is a path from A to B in all sub-graphs. Ideally, we would design a network in which there is always a path from A to B given any network failure.
-
-Lets look at the example in the network described above.
-
-== Conclusion/Discussion
 
 === Why Neo4j?
 
