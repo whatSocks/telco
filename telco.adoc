@@ -49,9 +49,9 @@ Let's find bridges in our network
 
 [source,cypher]
 ----
-MATCH path = (a:crew)-[bridge*1]-(b:crew)
-WHERE NOT (a)-[*2..3]-(b)
-RETURN DISTINCT a.crew_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.crew_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`
+MATCH path =(a:crew)-[r0]->(b:crew)
+WHERE NOT (a)-[*2]-(b) AND NOT (a)<--(b)
+RETURN DISTINCT a.crew_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.crew_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`, r0
 ----
 
 _note - edit query and prose below so that we know which end the service is coming from_
