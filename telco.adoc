@@ -1,1 +1,93 @@
-Hello
+= Telco Network Management Using Graph Database
+
+== Introduction
+
+=== The Problem
+
+Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. 
+
+=== The Challenge
+
+Among the challenges were: sourcing and transforming data from more than 30 systems into a single system that had to hold the up-to-date topology for the entire network, and being able to query that system efficiently, answering questions like: if a device needs to be taken down for maintenance, who might be impacted, and what alternate routes might be used to mitigate the impact.
+
+== The Network
+
+[ image of telco network from Neo4j presentation/whitepaper ] 
+
+//set up graphgist with a graph that looks very similar to this but with nicer subgraph for demonstration of a semi-realistic SRLG issue, which will be described below
+
+- Briefly go over the cypher for people are interested in learning cypher 
+- The full toy graph will have network information spread across > 30 systems, with daily changes to network infrastructure
+-- Will demonstrate that the graph can hold the up-to-date topology for the entire network
+
+== Solving the Problems
+
+=== Uncovering the Need for Additional Redundancy
+
+==== Finding and dealing with bridges
+- Define bridge, connected components
+- Demonstrate how easy it is to find network bridges using cyper
+- Change some nodes/connections, demo that it still works
+- Segue into the importance of redundancy in networks, and in the toy network add some connections. 
+-- Maybe connections are expensive - how can we add the least amount of connections as possible to avoid bridges? Just mention this and don’t get stuck in the weeds of graph theory
+
+=== Resilience During Unplanned Network Outages
+
+==== Introduction
+
+OK, so we’ve got redundancy, more or less. But we still need rapid, automated “what if ” analysis to ensure resilience during unplanned network outages"
+- introduce planning for subgraph-fault tolerant routing as very simple problem in small toy networks, but a much gnarlier one in larger complex networks. 
+- it might be too slow (both in cypher and for this write-up) to go through and eliminate link by link in the subgraph, but in a small subgraph example it’s doable, so use a small example
+-- the 5-node subraph in the next image is a good example
+- Conclude with a nice re-routing plan for the network and point out some weaknesses uncovered by this method
+
+==== Sub-graph Fault Tolerant Routing
+
+_Subgraph Fault-Tolerant Routing (SFTR)_ is a strategy for planning for the inevitable - resource or connection outage. Sometimes a squirrel builds a nest in part of your network. Although we have to accept that parts of our networks will break, we can also determine which components will be able to reroute and which will have the potential to be catastrophic failures.
+ 
+L+1 sub-graph routing is a strategy for routing dependable connections in optical networks. In this approach each network is mapped into L distinct sub-graphs resulting from the removal of links (in this example, only one link) from the original network.
+ 
+A connection from node A to B in this scheme becomes “accepted”–in other words, identified as not potentially catastrophic–only if it is there is a path from A to B in all sub-graphs. Ideally, we would design a network in which there is always a path from A to B given any network failure.
+ 
+Lets look at the example in the network described above.
+
+== Conclusion/Discussion
+
+=== Why Neo4j?
+
+The problem of modeling a live Telco network was a good fit for Neo4j’s solution, which uses nodes and relationships to describe assets on the network (switches, routers, cell towers), and the links between them (trunks, fiber optic cables, VPNs). Neo4j places no restrictions on the way the data is structured, or the data that is captured: it can model and represent the new network in a natural way. This extreme flexibility saves a great deal of time, and makes it possible to represent complex data and abstract concepts at the same time, within the same database. This is extremely powerful.
+
+=== Additional things telcos need to worry about that neo4j could help solve
+
+== Actual Use Case: Vivendi SFR
+
+- Second largest communications company in France
+- Part of Vivendi Group, partnering with Vodafone 
+
+SFR tasked a 10-person project team to find a network management solution, and brought in software consultants from London-based OpenCredo to provide best practice expertise. The team selected the Neo4j graph database to build a proof of concept app that could pinpoint any “single point of failure” across the components of the SFR multi-system network.
+
+== Cypher Appendix
+
+Briefly go over the queries in more detail 
+
+=== Setting up the Graph
+
+=== Uncovering the Need for Additional Redundancy
+
+==== Finding Bridges
+
+==== Adding Bridges
+
+=== Resilience During Unplanned Network Outages
+
+==== Removing Links
+
+==== Finding (the best) secondary routes for emergencies 
+
+== References
+
+- those two Frederick et al papers
+- Neo4j ‘intro slides’ and graph connect presentations
+- Neo4j telco white paper
+- 'http://en.wikipedia.org/wiki/Samuel_Johnson[Networks, Crowds, and Markets]'
+- 'http://jexp.de/blog/2014/03/sampling-a-neo4j-database/[Sampling a Neo4j Database]'
