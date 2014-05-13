@@ -30,6 +30,7 @@ CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`
 
 - Briefly go over the cypher for people are interested in learning cypher
 - The full toy graph will have network information spread across > 30 systems, with daily changes to network infrastructure
+-- now
 -- Will demonstrate that the graph can hold the up-to-date topology for the entire network
 
 == Solving the Problems
@@ -37,8 +38,22 @@ CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`
 === Uncovering the Need for Additional Redundancy
 
 ==== Finding and dealing with bridges
-- Define bridge, connected components
-- Demonstrate how easy it is to find network bridges using cyper
+
+A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, increases the number of connected components. In the example below, both edge a or b could be bridges, as their deletion would result in two connected components, only one of which would include Bob. 
+
+image::http://i.imgur.com/DvwWxMI.png[example]
+
+- Let's find bridges in our network
+//hide
+[source,cypher]
+----
+MATCH (a:crew)-[*1]-(b:crew)
+WHERE NOT (a:crew)-[*2..3]-(b:crew)
+RETURN a.name, b.name
+----
+//table
+
+
 - Change some nodes/connections, demo that it still works
 - Segue into the importance of redundancy in networks, and in the toy network add some connections.
 -- Maybe connections are expensive - how can we add the least amount of connections as possible to avoid bridges? Just mention this and don’t get stuck in the weeds of graph theory
@@ -47,7 +62,7 @@ CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`
 
 ==== Introduction
 
-OK, so we’ve got redundancy, more or less. But we still need rapid, automated “what if ” analysis to ensure resilience during unplanned network outages"
+OK, so we’ve got redundancy, more or less. But we still need rapid, automated “what if” analysis to ensure resilience during unplanned network outages"
 - introduce planning for subgraph-fault tolerant routing as very simple problem in small toy networks, but a much gnarlier one in larger complex networks.
 - it might be too slow (both in cypher and for this write-up) to go through and eliminate link by link in the subgraph, but in a small subgraph example it’s doable, so use a small example
 -- the 5-node subraph in the next image is a good example
