@@ -43,19 +43,20 @@ A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, inc
 
 image::http://i.imgur.com/DvwWxMI.png[example]
 
-- Let's find bridges in our network
-//hide
+^ replace this image with an image of this network, update names. 
+
+Let's find bridges in our network
+
 [source,cypher]
 ----
-MATCH path = (a:crew)-[bridge*1]->(b:crew)
-WHERE NOT (a:crew)-[*2..3]-(b:crew)
+MATCH path = (a:crew)-[bridge*1]-(b:crew)
+WHERE NOT (a)-[*2..3]-(b)
 RETURN DISTINCT a.crew_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.crew_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`
 ----
-//table
+
+_note - edit query and prose below so that we know which end the service is coming from_
 
 
-- Change some nodes/connections, demo that it still works
-- Segue into the importance of redundancy in networks, and in the toy network add some connections.
 -- Maybe connections are expensive - how can we add the least amount of connections as possible to avoid bridges? Just mention this and don’t get stuck in the weeds of graph theory
 
 === Resilience During Unplanned Network Outages
