@@ -78,6 +78,7 @@ For this example, let's make the following assumptions about the network and the
 - While resource A is communicating with resource B through a channel or set of channels, no other resource can use the channels for the duration of the communication. 
 - Resources, including bridge components _Abeer Fathy_ and _Aziza Hsuang-tsung_, are very robust and are unlikely to fail 
 - When it rains it pours: We are trying to determine where to place additional channels based on the worst case scenario. 
+
 -- More than one channel will fail at the same time, and we know the channels between resource 3 and 1 and 3 and 2 are in a particularly vulnerable area. 
 -- During crisis all resources will be trying to reach the parent network simultaneously
 
