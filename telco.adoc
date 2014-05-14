@@ -110,6 +110,24 @@ ORDER BY length(p)
 ----
 //table
 
+Resource 3 tries to reach resource 1:
+
+_query here, very similar to the previous query_
+
+Now resource 4 attempts to reach resource 1:
+
+_query here, very similar to the previous query_
+
+All possible paths to resource 1 are closed to resource 4.
+
+Now resource 5 attempts to reach resource 1: 
+
+_query here, very similar to the previous query_
+
+All possible paths to resource 1 are closed to resource 4. 
+
+In the case of network congestion and the failure of two links, two resources are unable to reach the service. As we have only enough resources for one additional link from the network, we now have to determine an appropriate location for the new link. 
+
 
 == Conclusion/Discussion
 
