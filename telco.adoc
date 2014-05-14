@@ -20,11 +20,11 @@ Among the challenges were: sourcing and transforming data from more than 30 syst
 //setup
 [source,cypher]
 ----
-//create the crew nodes
+//create the resource nodes
 CREATE (`1` :subgraph:crew {crew_id:1, name:'Abeer Fathy'}), (`2` :subgraph:crew {crew_id:2, name:'An Yu-bao'}), (`3` :subgraph:crew {crew_id:3, name:'Anastasiya Vasilyev'}), (`4` :subgraph:crew {crew_id:4, name:'Anna Zaytesev'}), (`5` :subgraph:crew {crew_id:5, name:'Asley Leger'}), (`6`:crew {crew_id:6, name:'Aziza Hsuang-tsung'}), (`7`:crew {crew_id:7, name:'Bai Vasilyev'}), (`8`:crew {crew_id:8, name:'Barbra Schon'}), (`9`:crew {crew_id:9, name:'Bart Kosana'}), (`10`:crew {crew_id:10, name:'Bill Hinzman'}), (`11`:crew {crew_id:11, name:'Bill Cardille'}), (`12`:crew {crew_id:12, name:'Bobba Fett'}), (`13`:crew {crew_id:13, name:'Cai Shen'}), (`14` :service {service_id:1, name:'Cammy Schott'}), (`15`:crew {crew_id:15, name:'Cammy Vinogradov'})
 
-//create the crew-crew relationships
-CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`)-[:KNOWS]->(`1`), (`2`)-[:KNOWS]->(`3`), (`2`)-[:KNOWS]->(`4`), (`3`)-[:KNOWS]->(`1`), (`3`)-[:KNOWS]->(`2`), (`3`)-[:KNOWS]->(`5`), (`4`)-[:KNOWS]->(`2`), (`4`)-[:KNOWS]->(`1`), (`4`)-[:KNOWS]->(`5`), (`5`)-[:KNOWS]->(`3`), (`5`)-[:KNOWS]->(`4`), (`14`)-[:KNOWS]->(`13`),(`14`)-[:KNOWS]->(`8`),(`14`)-[:KNOWS]->(`7`),(`7`)-[:KNOWS]->(`6`),(`8`)-[:KNOWS]->(`9`),(`13`)-[:KNOWS]->(`10`),(`10`)-[:KNOWS]->(`11`),(`10`)-[:KNOWS]->(`12`),(`12`)-[:KNOWS]->(`11`),(`13`)-[:KNOWS]->(`8`), (`7`)-[:KNOWS]->(`8`), (`8`)-[:KNOWS]->(`6`),(`6`)-[:KNOWS]->(`1`),(`15`)-[:KNOWS]->(`9`),(`13`)-[:KNOWS]->(`9`)
+//create the channels
+CREATE (`1`)-[:KNOWS]->(`2`), (`1`)-[:KNOWS]->(`4`), (`1`)-[:KNOWS]->(`3`), (`2`)-[:KNOWS]->(`3`), (`2`)-[:KNOWS]->(`4`), (`3`)-[:KNOWS]->(`5`), (`4`)-[:KNOWS]->(`5`),(`14`)-[:KNOWS]->(`13`),(`14`)-[:KNOWS]->(`8`),(`14`)-[:KNOWS]->(`7`),(`7`)-[:KNOWS]->(`6`),(`8`)-[:KNOWS]->(`9`),(`13`)-[:KNOWS]->(`10`),(`10`)-[:KNOWS]->(`11`),(`10`)-[:KNOWS]->(`12`),(`12`)-[:KNOWS]->(`11`),(`13`)-[:KNOWS]->(`8`), (`7`)-[:KNOWS]->(`8`), (`8`)-[:KNOWS]->(`6`),(`6`)-[:KNOWS]->(`1`),(`15`)-[:KNOWS]->(`9`),(`13`)-[:KNOWS]->(`9`)
 ----
 //graph
 
