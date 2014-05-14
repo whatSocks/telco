@@ -2,45 +2,42 @@
 
 == Introduction
 
-=== The Problem
-
-Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime.
+Stuff here
 
 === The Challenge
 
-Among the challenges were: sourcing and transforming data from more than 30 systems into a single system that had to hold the up-to-date topology for the entire network, and being able to query that system efficiently, answering questions like: if a device needs to be taken down for maintenance, who might be impacted, and what alternate routes might be used to mitigate the impact.
+Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. 
+
+- How can we keep predict potentially catastrophic outages? 
+- How can we easily find alternate routes upon network failure?
+
+_question: we can easily model congestion by setting a threshold, but this seems overkill for this very simple example._
 
 == The Network
 
 [ image of telco network from Neo4j presentation/whitepaper ]
-
-//set up graphgist with a graph that looks very similar to this but with nicer subgraph for demonstration of a semi-realistic SRLG issue, which will be described below
 
 //hide
 //setup
 [source,cypher]
 ----
 //create the resource nodes
-CREATE (`1` :subgraph:resource {crew_id:1, name:'Abeer Fathy'}), (`2` :subgraph:crew {crew_id:2, name:'An Yu-bao'}), (`3` :subgraph:crew {crew_id:3, name:'Anastasiya Vasilyev'}), (`4` :subgraph:crew {crew_id:4, name:'Anna Zaytesev'}), (`5` :subgraph:crew {crew_id:5, name:'Asley Leger'}), (`6`:crew {crew_id:6, name:'Aziza Hsuang-tsung'}), (`7`:crew {crew_id:7, name:'Bai Vasilyev'}), (`8`:crew {crew_id:8, name:'Barbra Schon'}), (`9`:crew {crew_id:9, name:'Bart Kosana'}), (`10`:crew {crew_id:10, name:'Bill Hinzman'}), (`11`:crew {crew_id:11, name:'Bill Cardille'}), (`12`:crew {crew_id:12, name:'Bobba Fett'}), (`13`:crew {crew_id:13, name:'Cai Shen'}), (`14` :service {service_id:1, name:'Cammy Schott'}), (`15`:crew {crew_id:15, name:'Cammy Vinogradov'})
+CREATE (`1` :subgraph:resource {resource_id:1, name:'Abeer'}), (`2` :subgraph:crew {resource_id:2, name:'An'}), (`3` :subgraph:crew {resource_id:3, name:'Anastasiya'}), (`4` :subgraph:crew {resource_id:4, name:'Anna'}), (`5` :subgraph:crew {resource_id:5, name:'Asley'}), (`6`:crew {resource_id:6, name:'Aziza'}), (`7`:crew {resource_id:7, name:'Bai'}), (`8`:crew {resource_id:8, name:'Barbra'}), (`9`:crew {resource_id:9, name:'Bart'}), (`10`:crew {resource_id:10, name:'Bill'}), (`11`:crew {resource_id:11, name:'Bill'}), (`12`:crew {resource_id:12, name:'Bobba'}), (`13`:crew {resource_id:13, name:'Cai'}), (`14` :service {service_id:1, name:'STS'}), (`15`:crew {resource_id:15, name:'Cammy'})
 
 //create the channels
 CREATE (`1`)-[:LINKS {status:'open'}]->(`2`), (`1`)-[:LINKS {status:'open'}]->(`4`), (`1`)-[:LINKS {status:'open'}]->(`3`), (`2`)-[:LINKS {status:'open'}]->(`3`), (`2`)-[:LINKS {status:'open'}]->(`4`), (`3`)-[:LINKS {status:'open'}]->(`5`), (`4`)-[:LINKS {status:'open'}]->(`5`),(`14`)-[:LINKS {status:'open'}]->(`13`),(`14`)-[:LINKS {status:'open'}]->(`8`),(`14`)-[:LINKS {status:'open'}]->(`7`),(`7`)-[:LINKS {status:'open'}]->(`6`),(`8`)-[:LINKS {status:'open'}]->(`9`),(`13`)-[:LINKS {status:'open'}]->(`10`),(`10`)-[:LINKS {status:'open'}]->(`11`),(`10`)-[:LINKS {status:'open'}]->(`12`),(`12`)-[:LINKS {status:'open'}]->(`11`),(`13`)-[:LINKS {status:'open'}]->(`8`), (`7`)-[:LINKS {status:'open'}]->(`8`), (`8`)-[:LINKS {status:'open'}]->(`6`),(`6`)-[:LINKS {status:'open'}]->(`1`),(`15`)-[:LINKS {status:'open'}]->(`9`),(`13`)-[:LINKS {status:'open'}]->(`9`)
 ----
 //graph
 
-- Briefly go over the cypher for people are interested in learning cypher
--- in this example I'm calling the nodes 'resources' and the relationships 'channels'
--- channels can have 3 different states: 'open', 'closed', or 'broken'
--- there are two types of nodes: crew (to be changed later) and service
-- The full toy graph will have network information spread across > 30 systems, with daily changes to network infrastructure
--- now
--- Will demonstrate that the graph can hold the up-to-date topology for the entire network
+In this example network, one service (the differently-colored node) provides services to a variety of clients through a network of linked resources. Each link is in one of three states: 'open', 'closed', or 'broken'. If a resource is using a link, it is considered 'closed', and no other resource can use it. If a resrouce is not using a link, it is considered 'open'. If something happens to a link that causes it to become unusable, the link is considered 'broken', and the network is at risk for an outage.  
 
-== Solving the Problems
 
-=== Uncovering the Need for Additional Redundancy
+===Uncovering the Need for Additional Redundancy
 
-==== Finding and dealing with bridges
+Although most of the resources in our example network above are connected to the main service by multiple links, there are some subsections of the network that are connected by only one link (a bridge). Although this lack of redundancy might be necessary due to lack of funds or other reasons, if this bridge is broken, a large chunk of our network will suffer an outage. Redundancy is necessary both for the avoidance of outages and well-planned redundancy necessary to keep costs under control. 
+
+
+=== Finding and dealing with bridges
 
 A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, increases the number of connected components. In the example below, both edge a or b could be bridges, as their deletion would result in two connected components, only one of which would include Bob. 
 
@@ -54,7 +51,7 @@ Let's find bridges in our network:
 ----
 MATCH path =(a:crew)-[r0]->(b:crew)
 WHERE NOT (a)-[*2]-(b) AND NOT (a)<--(b)
-RETURN DISTINCT a.crew_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.crew_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`, r0
+RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.resource_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`, r0
 ----
 
 _insert images of the bridges_
@@ -67,7 +64,7 @@ Naturally, if anything happens to any of these channels a chunk of of our networ
 
 ==== Introduction
 
-Let's take a look at the subgraph connected by the bridge between network resource _Abeer Fathy_ and _Aziza Hsuang-tsung_. 
+Let's take a look at the subgraph connected by the bridge between network resource 1 and 6. 
 
 _insert detailed diagram of this subgraph_
 
@@ -75,14 +72,43 @@ The need for additional connections evident: if a drunk driver or nest of squirr
 
 For this example, let's make the following assumptions about the network and the network owners' needs:
 
-- While resource A is communicating with resource B through a channel or set of channels, no other resource can use the channels for the duration of the communication. 
-- Resources, including bridge components _Abeer Fathy_ and _Aziza Hsuang-tsung_, are very robust and are unlikely to fail 
-- When it rains it pours: We are trying to determine where to place additional channels based on the worst case scenario. 
+- While resource A is communicating with resource B through a link or set of channels, no other resource can use the link for the duration of the communication. 
+- When it rains it pours: We are trying to determine where to place additional links based on the worst case scenario. 
  * More than one channel will fail at the same time, and we know the channels between resource 3 and 1 and 3 and 2 are in a particularly vulnerable area. 
- * During crisis all resources will be trying to reach the parent network simultaneously
+ * During crisis all resources will be trying to reach the parent network simultaneously, causing network congestion
 
-SOMETHING HERE 
+==== Modeling the Crisis
 
+_insert image of subcomponent with the vertices [3,1] and [3,2] broken, with resource 1 as the obvious connection to the outside world_
+
+A catastrophe has befallen the links between resource 3 and resources 2 and 1.
+
+[source,cypher]
+----
+MATCH p =(a:subgraph)-[r]-(b:subgraph)
+WHERE a.resource_id = 3 AND b.resouce_id < 3
+SET r.status = 'broken'
+RETURN a.resource_id, r.status, b.resouce_id
+----
+//table
+
+
+In the worst case scenario, all resources are trying to contact resource 1 in an effort to reach the service node. Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
+
+First, resource 2 attempts to reach resource 1: 
+
+_trouble with query, how to set all accepted r's as 'closed'?_
+
+[source,cypher]
+----
+MATCH p =(a:subraph)-[r*1..3]-(b:subgraph)
+WHERE a.resource_id = 1 
+AND b.resource_id = 2 
+AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+RETURN r
+ORDER BY length(p)
+----
+//table
 
 
 == Conclusion/Discussion
@@ -137,3 +163,16 @@ Briefly go over the queries in more detail
 - Neo4j telco white paper
 - 'http://en.wikipedia.org/wiki/Samuel_Johnson[Networks, Crowds, and Markets]'
 - 'http://jexp.de/blog/2014/03/sampling-a-neo4j-database/[Sampling a Neo4j Database]'
+
+
+== reasons for broken links (source: STS Telecom):
+- squirrels
+- drunk people
+- drunk people shooting at squirrels
+- homeless people lighting a fire that melts housing
+- car accidents
+- backhoes
+- people stealing fiber thinking it's copper
+- train derailments
+- car accidents
+- pole coming down
