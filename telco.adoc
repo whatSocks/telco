@@ -122,7 +122,7 @@ Resource 3 tries to reach resource 1 through the open links. If it succeeds, it 
 MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
 WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
 FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN DISTINCT a.relationships(p)
+RETURN DISTINCT relationships(p)
 ----
 //table
 
