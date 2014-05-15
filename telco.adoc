@@ -101,6 +101,15 @@ RETURN a.resource_id, r.status, b.resource_id
 ----
 //table
 
+Making sure query worked:
+
+[source,cypher]
+----
+MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+WHERE a.resource_id = 1 AND b.resource_id = 3
+RETURN relationships(p)
+----
+
 
 In the worst case scenario, all resources are trying to contact resource 1 in an effort to reach the service node. Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
@@ -182,7 +191,7 @@ Since all options result in one resource being blocked and placing a link at res
 [source,cypher]
 ----
 MATCH (a {resource_id: 5}), (b:service)
-MERGE (a)<-[:LINK {status:`open`}]-(b)
+MERGE (a)<-[:LINKS {status:'open'}]-(b)
 ----
 //table
 
