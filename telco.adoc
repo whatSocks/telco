@@ -49,7 +49,7 @@ Let's find bridges in our network:
 
 [source,cypher]
 ----
-MATCH path =(a:resource)-[r0]->(b:resource)
+MATCH path = (a:resource)-[r0]->(b:resource)
 WHERE NOT (a)-[*3]-(b) AND NOT (a)<--(b)
 RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.resource_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`, r0
 ----
@@ -68,6 +68,15 @@ Let's take a look at the subgraph connected by the bridge between network resour
 
 _insert detailed diagram of this subgraph_
 
+[source,cypher]
+----
+MATCH path = shortestPath((a:subgraph)-[*..3]-(b))
+WHERE NOT (b:subgraph)
+RETURN DISTINCT a.resource_id AS `RESOURCE ID`, min(length(relationships(path))) AS `DISTANCE TO NETWORK`
+ORDER BY `RESOURCE ID` ASC
+----
+
+
 The need for additional connections evident: if a drunk driver or nest of squirreles were to eliminate this bridge, the entire subgraph will go down. The next question: Assuming the owner of the netowrk has the funds for only one additional link to the subgraph, what is the optimal location to place it? 
 
 For this example, let's make the following assumptions about the network and the network owners' needs:
@@ -81,7 +90,7 @@ For this example, let's make the following assumptions about the network and the
 
 _insert image of subcomponent with the vertices [3,1] and [3,2] broken, with resource 1 as the obvious connection to the outside world_
 
-A catastrophe has befallen the links between resource 3 and resources 2 and 1.
+*_A catastrophe has befallen the links between resource 3 and resources 2 and 1._*
 
 [source,cypher]
 ----
@@ -95,39 +104,96 @@ RETURN a.resource_id, r.status, b.resource_id
 
 In the worst case scenario, all resources are trying to contact resource 1 in an effort to reach the service node. Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
-First, resource 2 attempts to reach resource 1: 
-
-_trouble with query, how to set all accepted r's as 'closed'?_
+First, resource 2 attempts to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed': 
 
 [source,cypher]
 ----
-MATCH p =(a:subgraph)-[r*1..3]-(b:subgraph)
-WHERE a.resource_id = 1 
-AND b.resource_id = 2 
-AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-RETURN r
-ORDER BY length(p)
+MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
+WHERE a.resource_id = 1 AND b.resource_id = 2 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+FOREACH (x IN relationships(p) | SET x.status = 'closed')
+RETURN relationships(p)
 ----
 //table
 
-Resource 3 tries to reach resource 1:
+Resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed':
 
-_query here, very similar to the previous query_
+[source,cypher]
+----
+MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
+WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+FOREACH (x IN relationships(p) | SET x.status = 'closed')
+RETURN DISTINCT a.relationships(p)
+----
+//table
+
 
 Now resource 4 attempts to reach resource 1:
 
-_query here, very similar to the previous query_
+[source,cypher]
+----
+MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
+WHERE a.resource_id = 1 AND b.resource_id = 4 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+FOREACH (x IN relationships(p) | SET x.status = 'closed')
+RETURN relationships(p)
+----
+//table
 
 All possible paths to resource 1 are closed to resource 4.
 
-Now resource 5 attempts to reach resource 1: 
+Resource 5 attempts to reach resource 1: 
 
-_query here, very similar to the previous query_
+[source,cypher]
+----
+MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
+WHERE a.resource_id = 1 AND b.resource_id = 4 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+FOREACH (x IN relationships(p) | SET x.status = 'closed')
+RETURN relationships(p)
+----
+//table
 
-All possible paths to resource 1 are closed to resource 4. 
+All possible paths to resource 1 are closed to resource 5. 
 
 In the case of network congestion and the failure of two links, two resources are unable to reach the service. As we have only enough resources for one additional link from the network, we now have to determine an appropriate location for the new link. 
 
+*_Planning the new link_*
+
+Assuming resources 3, 4, and 5 are of equal priority, and that the links between 1 and 3 and 2 and 3 will continue to have problems with connectivity, we still have a few options in which to place our new link. Recall that in the intact network resource 5 has the longest path to the network. 
+
+A link at 5:
+
+- Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 1)
+- Allows resource 3 to contact the network without blocking resource 4s' access to the network
+- In the scenario described above (congested network with weak links down), one resource (either 3 or 5) will still be unable to access the network 
+
+A link at 4:
+
+- Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 2)
+- Does not allows resource 3 to contact the network without blocking resource 4s' access to the network
+- In the scenario described above (congested network with weak links down), one resource (3) will still be unable to access the network 
+
+A link at 3:
+
+- Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 2)
+- Allows resource 3 to contact the network without blocking resource 4s' access to the network
+- In the scenario described above (congested network with weak links down), one resource (either 4 or 5) will still be unable to access the network 
+
+Since all options result in one resource being blocked and placing a link at resource 5 results in the shortest path for resource 5 in both the damaged and intact network, let's place the new link at resource 5. 
+
+[source,cypher]
+----
+MATCH (a {resource_id: 5}), (b:service)
+MERGE (a)<-[:LINK {status:`open`}]-(b)
+----
+//table
+
+
+[source,cypher]
+----
+MATCH path = shortestPath((a:subgraph)-[*..3]-(b))
+WHERE NOT (b:subgraph)
+RETURN DISTINCT a.resource_id AS `RESOURCE ID`, min(length(relationships(path))) AS `DISTANCE TO NETWORK`
+ORDER BY `RESOURCE ID` ASC
+----
 
 == Conclusion/Discussion
 
