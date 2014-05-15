@@ -2,10 +2,6 @@
 
 == Introduction
 
-Stuff here
-
-=== The Challenge
-
 Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. 
 
 - How can we keep predict potentially catastrophic outages? 
@@ -56,7 +52,7 @@ RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b
 
 _insert images of the bridges_
 
-_insert description of what's going on at each bridge_ 
+_insert description of what's going on at each bridge once bridge issue is solved_ 
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
@@ -85,12 +81,13 @@ For this example, let's make the following assumptions about the network and the
 - When it rains it pours: We are trying to determine where to place additional links based on the worst case scenario. 
  * More than one channel will fail at the same time, and we know the channels between resource 3 and 1 and 3 and 2 are in a particularly vulnerable area. 
  * During crisis all resources will be trying to reach the parent network simultaneously, causing network congestion
+ - The network prefers shortest paths
 
 ==== Modeling the Crisis
 
 _insert image of subcomponent with the vertices [3,1] and [3,2] broken, with resource 1 as the obvious connection to the outside world_
 
-*_A catastrophe has befallen the links between resource 3 and resources 2 and 1._*
+*_A catastrophe has befallen the links between resource 3 and 1 and 3 and 2._*
 
 [source,cypher]
 ----
@@ -101,7 +98,7 @@ RETURN a.resource_id, r.status, b.resource_id
 ----
 //table
 
-Making sure query worked:
+Let's make sure the query worked - resource 3 should have two broken links and one open link:
 
 [source,cypher]
 ----
@@ -109,11 +106,23 @@ MATCH p =(a)-[r]-(b)
 WHERE b.resource_id = 3
 RETURN a.resource_id, r.status, b.resource_id
 ----
+//table
 
+*_Due to the catastrophe, all nodes in the subgraph are trying to reach the service through resource 1_*
 
-In the worst case scenario, all resources are trying to contact resource 1 in an effort to reach the service node. Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
+Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
-First, resource 2 attempts to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed': 
+First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at the possilbe paths:
+
+[source,cypher]
+----
+MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+WHERE a.resource_id = 1 AND b.resource_id = 2 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+RETURN DISTINCT relationships(p)
+----
+//table
+
+There are three possible paths, and only one shortest path. Resource 2 is going to take the shortest path to resource 1, closing linkson the way:
 
 [source,cypher]
 ----
@@ -124,77 +133,49 @@ RETURN relationships(p)
 ----
 //table
 
-Resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed':
+Resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed'. Let's take a look at the options:
 
-[source,cypher]
+source,cypher]
 ----
-MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
+MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
+RETURN DISTINCT relationships(p)
+----
+//table
+
+There's only one path to resrouce 1, so let's re-run the query, this time setting all the links on the path to 1 as 'closed'. Network congestion is increasing. 
+
+source,cypher]
+----
+MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
 FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN DISTINCT relationships(p)
 ----
 //table
-
-_well, that didn't work. Deleting 'shortestPath'_
-
-[source,cypher]
-----
-MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
-WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN DISTINCT relationships(p)
-----
-//table
-
 
 
 Now resource 4 attempts to reach resource 1:
 
 [source,cypher]
 ----
-MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
+MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 4 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN relationships(p)
+RETURN DISTINCT relationships(p)
 ----
 //table
 
-_trying again, deleting shortestPath_
+Resource 4 is blocked! What about resrouce 5?
 
 [source,cypher]
 ----
 MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
-WHERE a.resource_id = 1 AND b.resource_id = 4 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN relationships(p)
-----
-//table
-
-All possible paths to resource 1 are closed to resource 4.
-
-Resource 5 attempts to reach resource 1: 
-
-[source,cypher]
-----
-MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
 WHERE a.resource_id = 1 AND b.resource_id = 5 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN relationships(p)
+RETURN DISTINCT relationships(p)
 ----
 //table
 
-_trying again, deleting shortestPath_
-
-[source,cypher]
-----
-MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
-WHERE a.resource_id = 1 AND b.resource_id = 5 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN relationships(p)
-----
-//table
-
-All possible paths to resource 1 are closed to resource 5. 
+All possible paths to resource 1 are closed to resource 5 and resrouce 4. 
 
 In the case of network congestion and the failure of two links, two resources are unable to reach the service. As we have only enough resources for one additional link from the network, we now have to determine an appropriate location for the new link. 
 
