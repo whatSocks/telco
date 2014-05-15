@@ -86,9 +86,9 @@ A catastrophe has befallen the links between resource 3 and resources 2 and 1.
 [source,cypher]
 ----
 MATCH p =(a:subgraph)-[r]-(b:subgraph)
-WHERE a.resource_id = 3 AND b.resouce_id < 3
+WHERE a.resource_id = 3 AND b.resource_id < 3
 SET r.status = 'broken'
-RETURN a.resource_id, r.status, b.resouce_id
+RETURN a.resource_id, r.status, b.resource_id
 ----
 //table
 
