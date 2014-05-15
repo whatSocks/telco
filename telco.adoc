@@ -105,9 +105,9 @@ Making sure query worked:
 
 [source,cypher]
 ----
-MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+MATCH p =(a:subgraph)-[r]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 3
-RETURN relationships(p)
+RETURN a.resource_id, r.status, b.resource_id
 ----
 
 
