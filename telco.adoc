@@ -1,15 +1,12 @@
-= Telco Network Management Using Graph Database
+= Telco Network Management Using A Graph Database
 
 == Introduction
 
-Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. 
-
-- How can we keep predict potentially catastrophic outages? 
-- How can we easily find alternate routes upon network failure?
+Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. This graphgist explores how we can use Cypher to find weak areas of a network and gain insight into how to efficiently allocate resources.  
 
 == The Network
 
-[ image of telco network from Neo4j presentation/whitepaper ]
+In the following example network, one service node provides services to a variety of clients through a network of linked resources. Each link can be in one of three states: 'open', 'closed', or 'broken'. If a resource is using a link, it is considered 'closed', and no other resource can use it. If a resource is not using a link, it is considered 'open'. If something happens to a link that causes it to become unusable, the link is considered 'broken', and the network is at risk.  
 
 //hide
 //setup
@@ -17,45 +14,41 @@ Telecommunication companies need a way to predict and warn customers in advance 
 ----
 //create the resource nodes
 CREATE 	(`1`:resource {resource_id:1}), 
-				(`2`:resource {resource_id:2}), 
-				(`3`:resource {resource_id:3}), 
-				(`4`:resource {resource_id:4}), 
-				(`5`:resource {resource_id:5}), 
-				(`6`:resource {resource_id:6}), 
-				(`7`:resource {resource_id:7}), 
-				(`8`:resource {resource_id:8}), 
-				(`9`:resource {resource_id:9}), 
-				(`10`:resource {resource_id:10}), 
-				(`11`:resource {resource_id:11}), 
-				(`12`:resource {resource_id:12}), 
-				(`13`:resource {resource_id:13}), 
-				(`14`:service {service_id:1}), 
-				(`15`:resource {resource_id:15})
+			(`2`:resource {resource_id:2}), 
+			(`3`:resource {resource_id:3}), 
+			(`4`:resource {resource_id:4}), 
+			(`5`:resource {resource_id:5}), 
+			(`6`:resource {resource_id:6}), 
+			(`7`:resource {resource_id:7}), 
+			(`8`:resource {resource_id:8}), 
+			(`9`:resource {resource_id:9}), 
+			(`10`:resource {resource_id:10}), 
+			(`11`:resource {resource_id:11}), 
+			(`12`:resource {resource_id:12}), 
+			(`13`:resource {resource_id:13}), 
+			(`14`:service {service_id:1}), 
+			(`15`:resource {resource_id:15})
 
 //create the channels
 CREATE	(`1`)-[:LINKS {status:'open'}]->(`2`),(`1`)-[:LINKS {status:'open'}]->(`3`),(`1`)-[:LINKS {status:'open'}]->(`4`),
-				(`2`)-[:LINKS {status:'open'}]->(`3`),(`2`)-[:LINKS {status:'open'}]->(`4`),
-				(`3`)-[:LINKS {status:'open'}]->(`5`),
-				(`4`)-[:LINKS {status:'open'}]->(`5`),
-				(`6`)-[:LINKS {status:'open'}]->(`1`),
-				(`7`)-[:LINKS {status:'open'}]->(`6`),(`7`)-[:LINKS {status:'open'}]->(`8`), 
-				(`8`)-[:LINKS {status:'open'}]->(`6`),(`8`)-[:LINKS {status:'open'}]->(`9`),
-				(`10`)-[:LINKS {status:'open'}]->(`11`),(`10`)-[:LINKS {status:'open'}]->(`12`),
-				(`12`)-[:LINKS {status:'open'}]->(`11`),
-				(`13`)-[:LINKS {status:'open'}]->(`8`),(`13`)-[:LINKS {status:'open'}]->(`9`),(`13`)-[:LINKS {status:'open'}]->(`10`),				
-				(`14`)-[:LINKS {status:'open'}]->(`7`),(`14`)-[:LINKS {status:'open'}]->(`8`),(`14`)-[:LINKS {status:'open'}]->(`13`),
-				(`15`)-[:LINKS {status:'open'}]->(`9`)
+			(`2`)-[:LINKS {status:'open'}]->(`3`),(`2`)-[:LINKS {status:'open'}]->(`4`),
+			(`3`)-[:LINKS {status:'open'}]->(`5`),
+			(`4`)-[:LINKS {status:'open'}]->(`5`),
+			(`6`)-[:LINKS {status:'open'}]->(`1`),
+			(`7`)-[:LINKS {status:'open'}]->(`6`),(`7`)-[:LINKS {status:'open'}]->(`8`), 
+			(`8`)-[:LINKS {status:'open'}]->(`6`),(`8`)-[:LINKS {status:'open'}]->(`9`),
+			(`10`)-[:LINKS {status:'open'}]->(`11`),(`10`)-[:LINKS {status:'open'}]->(`12`),
+			(`12`)-[:LINKS {status:'open'}]->(`11`),
+			(`13`)-[:LINKS {status:'open'}]->(`8`),(`13`)-[:LINKS {status:'open'}]->(`9`),(`13`)-[:LINKS {status:'open'}]->(`10`),				
+			(`14`)-[:LINKS {status:'open'}]->(`7`),(`14`)-[:LINKS {status:'open'}]->(`8`),(`14`)-[:LINKS {status:'open'}]->(`13`),
+			(`15`)-[:LINKS {status:'open'}]->(`9`)
 RETURN *
 ----
 //graph
 
-In this example network, one service (the differently-colored node) provides services to a variety of clients through a network of linked resources. Each link is in one of three states: 'open', 'closed', or 'broken'. If a resource is using a link, it is considered 'closed', and no other resource can use it. If a resrouce is not using a link, it is considered 'open'. If something happens to a link that causes it to become unusable, the link is considered 'broken', and the network is at risk for an outage.  
-
-
 === Uncovering the Need for Additional Redundancy
 
-Although most of the resources in our example network above are connected to the main service by multiple links, there are some subsections of the network that are connected by only one link (a bridge). Although this lack of redundancy might be necessary due to lack of funds or other reasons, if this bridge is broken, a large chunk of our network will suffer an outage. Redundancy is necessary both for the avoidance of outages and well-planned redundancy necessary to keep costs under control. 
-
+Although most of the resources in our example network above are connected to the main service by multiple links, there are some subsections of the network that are connected by only one link (a bridge). Although this lack of redundancy might be necessary due to lack of funds or other reasons, if the bridge fails a large chunk of our network will suffer an outage. In short, redundancy is necessary both for the avoidance of outages and well-planned redundancy necessary to keep costs under control. 
 
 === Finding and dealing with bridges
 
@@ -63,15 +56,15 @@ A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, inc
 
 image::http://i.imgur.com/DvwWxMI.png[example]
 
-_replace this image with an image of this network, update names_
+_replace this image with an image of this network, highlight bridges_
 
 Let's find bridges in our network:
 
 [source,cypher]
 ----
-MATCH path = (a:resource)-[r0]-(b:resource)
+MATCH path = (a:resource)-[r0]->(b:resource)
 WHERE NOT (a)-[*2..3]-(b)
-RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, a.name AS `Endpoint 1 Name`, b.resource_id AS `Endpoint 2 ID`, b.name AS `Endpoint 2 Name`, r0
+RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resource_id AS `Endpoint 2 ID`
 ----
 //table
 
@@ -258,6 +251,7 @@ WHERE NOT (b:subgraph)
 RETURN DISTINCT a.resource_id AS `RESOURCE ID`, min(length(relationships(path))) AS `DISTANCE TO NETWORK`
 ORDER BY `RESOURCE ID` ASC
 ----
+//table
 
 == Conclusion/Discussion
 
