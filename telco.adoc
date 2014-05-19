@@ -56,8 +56,6 @@ A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, inc
 
 image::http://i.imgur.com/DvwWxMI.png[example]
 
-_replace this image with an image of this network, highlight bridges_
-
 Let's find bridges in our network:
 
 [source,cypher]
@@ -68,9 +66,7 @@ RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resou
 ----
 //table
 
-_insert images of the bridges_
-
-_insert description of what's going on at each bridge once bridge issue is solved_ 
+_insert images of the bridges: the same as the image of the network but with the bridges highlighted_
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
@@ -82,15 +78,12 @@ Let's take a look at the subgraph connected by the bridge between network resour
 
 [source,cypher]
 ----
-MATCH path =(a:resource { resource_id:1 })-[*1..3]-(c:resource)
+MATCH path = (a:resource { resource_id:1 })-[*1..3]-(c:resource)
 WHERE ALL (n IN nodes(path) WHERE NOT n.resource_id=6)
 FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 //graph
-
-_insert detailed diagram of this subgraph_
-
 
 [source,cypher]
 ----
@@ -105,7 +98,7 @@ As demonstrated in the table and image, all information from members of the subg
 
 Even without analysis, resource 5 seems like the most likely candidate for the allocation of additional resources. 
 
-The need for additional connections evident: if a drunk driver or nest of squirreles were to eliminate this bridge, the entire subgraph will go down. The next question: Assuming the owner of the netowrk has the funds for only one additional link to the subgraph, what is the optimal location to place it? 
+The need for additional connections evident: if a drunk driver or nest of squirrels were to eliminate this bridge, the entire subgraph will go down. The next question: Assuming the owner of the network has the funds for only one additional link to the subgraph, what is the optimal location to place it? 
 
 For this example, let's make the following assumptions about the network and the network owners' needs:
 
@@ -123,7 +116,7 @@ _insert image of subcomponent with the vertices [3,1] and [3,2] broken, with res
 
 [source,cypher]
 ----
-MATCH p =(a:subgraph)-[r]-(b:subgraph)
+MATCH p = (a:subgraph)-[r]-(b:subgraph)
 WHERE a.resource_id = 3 AND b.resource_id < 3
 SET r.status = 'broken'
 RETURN a.resource_id, r.status, b.resource_id
@@ -134,7 +127,7 @@ Let's make sure the query worked - resource 3 should have two broken links and o
 
 [source,cypher]
 ----
-MATCH p =(a)-[r]-(b)
+MATCH p = (a)-[r]-(b)
 WHERE a.resource_id = 3
 RETURN a.resource_id AS `FIRST RESOURCE`, r.status AS `LINK`, b.resource_id AS `SECOND RESOURCE`
 ----
@@ -144,18 +137,15 @@ RETURN a.resource_id AS `FIRST RESOURCE`, r.status AS `LINK`, b.resource_id AS `
 
 Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
-First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at the possilbe paths:
+First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at the possible paths:
 
 [source,cypher]
 ----
-MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 2 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
 RETURN DISTINCT relationships(p)
 ----
 //table
-
-_question: is there a way to break ties with shortestpath?_
-_question: is there a way find shortestPath while specifying properties of relationships?_
 
 There are three possible paths, and only one shortest path. Resource 2 is going to take the shortest path to resource 1, closing links on the way:
 
@@ -170,19 +160,19 @@ RETURN relationships(p)
 
 Resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed'. Let's take a look at the options:
 
-source,cypher]
+[source,cypher]
 ----
-MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
 RETURN DISTINCT relationships(p)
 ----
 //table
 
-There's only one path to resrouce 1, so let's re-run the query, this time setting all the links on the path to 1 as 'closed'. Network congestion is increasing. 
+There's only one path to resource 1, so let's re-run the query, this time setting all the links on the path to 1 as 'closed'. Network congestion is increasing. 
 
 [source,cypher]
 ----
-MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
+MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
 FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN DISTINCT relationships(p)
@@ -200,7 +190,7 @@ RETURN DISTINCT relationships(p)
 ----
 //table
 
-Resource 4 is blocked! What about resrouce 5?
+Resource 4 is blocked! What about resource 5?
 
 [source,cypher]
 ----
@@ -210,7 +200,7 @@ RETURN DISTINCT relationships(p)
 ----
 //table
 
-All possible paths to resource 1 are closed to resource 5 and resrouce 4. 
+All possible paths to resource 1 are closed to resource 5 and resource 4. 
 
 In the case of network congestion and the failure of two links, two resources are unable to reach the service. As we have only enough resources for one additional link from the network, we now have to determine an appropriate location for the new link. 
 
@@ -218,19 +208,19 @@ In the case of network congestion and the failure of two links, two resources ar
 
 Assuming resources 3, 4, and 5 are of equal priority, and that the links between 1 and 3 and 2 and 3 will continue to have problems with connectivity, we still have a few options in which to place our new link. Recall that in the intact network resource 5 has the longest path to the network. 
 
-A link at 5:
+.A link at 5:
 
 - Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 1)
 - Allows resource 3 to contact the network without blocking resource 4s' access to the network
 - In the scenario described above (congested network with weak links down), one resource (either 3 or 5) will still be unable to access the network 
 
-A link at 4:
+.A link at 4:
 
 - Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 2)
 - Does not allows resource 3 to contact the network without blocking resource 4s' access to the network
 - In the scenario described above (congested network with weak links down), one resource (3) will still be unable to access the network 
 
-A link at 3:
+.A link at 3:
 
 - Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 2)
 - Allows resource 3 to contact the network without blocking resource 4s' access to the network
