@@ -91,6 +91,7 @@ Let's take a look at the subgraph connected by the bridge between network resour
 ----
 MATCH path =(a:resource { resource_id:1 })-[*1..3]-(c:resource)
 WHERE ALL (n IN nodes(path) WHERE NOT n.resource_id=6)
+FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 //graph
