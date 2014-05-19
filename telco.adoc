@@ -187,7 +187,7 @@ RETURN DISTINCT relationships(p)
 
 There's only one path to resrouce 1, so let's re-run the query, this time setting all the links on the path to 1 as 'closed'. Network congestion is increasing. 
 
-source,cypher]
+[source,cypher]
 ----
 MATCH p =(a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
