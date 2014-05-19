@@ -8,9 +8,6 @@ Telecommunication companies need a way to predict and warn customers in advance 
 
 In the following example network, one service node provides services to a variety of clients through a network of linked resources. Each link can be in one of three states: 'open', 'closed', or 'broken'. If a resource is using a link, it is considered 'closed', and no other resource can use it. If a resource is not using a link, it is considered 'open'. If something happens to a link that causes it to become unusable, the link is considered 'broken', and the network is at risk.  
 
-
-
-
 //hide
 //setup
 [source,cypher]
@@ -86,7 +83,9 @@ WHERE ALL (n IN nodes(path) WHERE NOT n.resource_id=6)
 FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
-//graph
+
+_image here_
+
 
 [source,cypher]
 ----
@@ -140,17 +139,17 @@ RETURN a.resource_id AS `FIRST RESOURCE`, r.status AS `LINK`, b.resource_id AS `
 
 Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
-First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at the possible paths:
+First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at lengths of the possible paths:
 
 [source,cypher]
 ----
 MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
 WHERE a.resource_id = 1 AND b.resource_id = 2 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-RETURN DISTINCT relationships(p)
+RETURN DISTINCT length(p) AS `Length of Path`
 ----
 //table
 
-There are three possible paths, and only one shortest path. Resource 2 is going to take the shortest path to resource 1, closing links on the way:
+There are two possible paths, and only one shortest path. Resource 2 is going to take the shortest path to resource 1, closing links on the way:
 
 [source,cypher]
 ----
@@ -161,7 +160,7 @@ RETURN relationships(p)
 ----
 //table
 
-Resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed'. Let's take a look at the options:
+Now resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed'. Let's take a look at the options:
 
 [source,cypher]
 ----
@@ -181,7 +180,6 @@ FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN DISTINCT relationships(p)
 ----
 //table
-
 
 Now resource 4 attempts to reach resource 1:
 
@@ -248,10 +246,6 @@ ORDER BY `RESOURCE ID` ASC
 
 == Conclusion/Discussion
 
-=== more conclusion copy
-
-conclusion stuff
-
 === Sub-graph Fault Tolerant Routing
 
 _Subgraph Fault-Tolerant Routing (SFTR)_ is a strategy for planning for the inevitable - resource or connection outage. Sometimes a squirrel builds a nest in part of your network. Although we have to accept that parts of our networks will break, we can also determine which components will be able to reroute and which will have the potential to be catastrophic failures.
@@ -264,15 +258,12 @@ A connection from node A to B in this scheme becomes “accepted”–in other w
 
 The problem of modeling a live Telco network was a good fit for Neo4j’s solution, which uses nodes and relationships to describe assets on the network (switches, routers, cell towers), and the links between them (trunks, fiber optic cables, VPNs). Neo4j places no restrictions on the way the data is structured, or the data that is captured: it can model and represent the new network in a natural way. This extreme flexibility saves a great deal of time, and makes it possible to represent complex data and abstract concepts at the same time, within the same database. This is extremely powerful.
 
-=== Additional things telcos need to worry about that neo4j could help solve
-
 == Actual Use Case: Vivendi SFR
 
 - Second largest communications company in France
 - Part of Vivendi Group, partnering with Vodafone
 
 SFR tasked a 10-person project team to find a network management solution, and brought in software consultants from London-based OpenCredo to provide best practice expertise. The team selected the Neo4j graph database to build a proof of concept app that could pinpoint any “single point of failure” across the components of the SFR multi-system network.
-
 
 == Cypher Appendix
 
@@ -284,6 +275,14 @@ WHERE NOT (a)-[*2..3]-(b)
 RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resource_id AS `Endpoint 2 ID`
 ----
 
+By definition, a bridge is an edge, here incarnated by the relationship between (a) and (b): "(a:resource)-[r0]->(b:resource)". How did we eliminate edjes between (a) and arbitrary node (b)s that were part of a cycle, and therefore, not bridges?
+
+Since this is a small network with a maximum of one link per node, and GraphGists are artificially limited, we excluded paths in which (a) is connected to (b) between two or three hops of separation. 
+
+For example, the following path betwen (a) and (b) would be excluded, as (a) is 2 hops away from b:
+
+_image of (a)--(b)--()--(a)_
+
 === Finding and Labeling a Subgraph
 
 ----
@@ -293,23 +292,9 @@ FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 
-=== Checking Members of a Path for Features
+Again, as this is a small network and we know two things: that the longest path in the subgraph in question is 3 hops, and that node 6 (the other end of the bridge connecting the subgraph) is not in the subgraph. 
 
-----
-MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
-WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-FOREACH (x IN relationships(p) | SET x.status = 'closed')
-RETURN DISTINCT relationships(p)
-----
-
-=== Checking a Path for Features
-
-Relationships
-----
-MATCH p = (a:subgraph)-[r*..3]-(b:subgraph)
-WHERE a.resource_id = 1 AND b.resource_id = 2 AND ALL (r1 IN relationships(p) WHERE r1.status='open')
-RETURN DISTINCT relationships(p)
-----
+The query collects all paths between 1 and 3 hops away from resource 1, checks that all nodes in each path doesn't have resource_id 6, and labels all nodes in the filtered paths with the label 'subgraph'. 
 
 === Finding the Shortest Path
 ----
@@ -319,23 +304,10 @@ FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN relationships(p)
 ----
 
+Although shortestPath seems self-explanatory, it is important to note that there may be more than one 'shortestPath'.
+
 == References
 
-- those two Frederick et al papers
-- Neo4j ‘intro slides’ and graph connect presentations
-- Neo4j telco white paper
+- Frederick, Michael T., Pallab Datta, and Arun K. Somani. "Sub-Graph Routing: A generalized fault-tolerant strategy for link failures in WDM Optical Networks." Computer Networks 50.2 (2006): 181-199.
 - 'http://en.wikipedia.org/wiki/Samuel_Johnson[Networks, Crowds, and Markets]'
 - 'http://jexp.de/blog/2014/03/sampling-a-neo4j-database/[Sampling a Neo4j Database]'
-
-
-== reasons for broken links (source: STS Telecom):
-- squirrels
-- drunk people
-- drunk people shooting at squirrels
-- homeless people lighting a fire that melts housing
-- car accidents
-- backhoes
-- people stealing fiber thinking it's copper
-- train derailments
-- car accidents
-- pole coming down
