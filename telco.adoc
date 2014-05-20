@@ -94,7 +94,7 @@ RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resou
 ----
 //table
 
-image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network_bridges.png[]
+image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network_bridges.PNG[]
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
