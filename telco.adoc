@@ -68,6 +68,10 @@ RETURN *
 ----
 //graph
 
+
+image::images/whole_network.png[]
+
+
 [[redundancy]]
 == Uncovering the Need for Additional Redundancy
 
@@ -90,7 +94,7 @@ RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resou
 ----
 //table
 
-_insert images of the bridges: the same as the image of the network but with the bridges highlighted_
+image::images/whole_network_bridges.png[]
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
@@ -110,7 +114,7 @@ FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 
-_image here_
+image::images/subgraph.png[]
 
 
 [source,cypher]
