@@ -2,7 +2,7 @@
 
 '''
 
-*Table of Contents*
+== Table of Contents*
 
 * *<<introduction, Introduction>>*
 * *<<the_network, The Network>>*
@@ -342,7 +342,7 @@ FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN relationships(p)
 ----
 
-Although shortestPath seems self-explanatory, it is important to note that there may be more than one 'shortestPath' (for example, two paths of length 2 might be the shortest in the network), and the one returned by the stock query may not be the one you are interested in.
+Although shortestPath seems self-explanatory, it is important to note that there may be more than one 'shortestPath' (for example, two paths of length 2 might be the shortest in the network), and the one returned by the stock query may not be the one you are interested in. Try using it's allShortestPaths instead. 
 
 [[references]]
 == References
