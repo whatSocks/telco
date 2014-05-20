@@ -292,7 +292,9 @@ A connection from node A to B in this scheme becomes “accepted”–in other w
 The problem of modeling a live Telco network was a good fit for Neo4j’s solution, which uses nodes and relationships to describe assets on the network (switches, routers, cell towers), and the links between them (trunks, fiber optic cables, VPNs). Neo4j places no restrictions on the way the data is structured, or the data that is captured: it can model and represent the new network in a natural way. This extreme flexibility saves a great deal of time, and makes it possible to represent complex data and abstract concepts at the same time, within the same database. This is extremely powerful.
 
 [[vivendi]]
-== Use Case: image::https://raw.githubusercontent.com/whatSocks/telco/master/images/SFR_logo.png[] Vivendi SFR 
+== Use Case: Vivendi SFR 
+
+image::https://raw.githubusercontent.com/whatSocks/telco/master/images/SFR_logo.png[]
 
 Owned by Vivendi, the French multinational media and telecommunications company, SFR  is the second largest telecommunications company in France, earning nearly 12 billion Euros in annual revenue. 
 
