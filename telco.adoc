@@ -114,7 +114,7 @@ FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 
-image::images/subgraph.png[]
+image::https://raw.githubusercontent.com/whatSocks/telco/master/images/subgraph.PNG[]
 
 [source,cypher]
 ----
