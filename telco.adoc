@@ -1,9 +1,31 @@
 = Telco Network Management Using A Graph Database
 
+'''
+
+*Table of Contents*
+
+* *<<introduction, Introduction>>*
+* *<<the_network, The Network>>*
+* *<<redundancy, Uncovering the Need for Additional Redundancy>>*
+* *<<bridges, Finding and Dealing with Bridges>>*
+* *<<resilience, Resilience During Unplanned Network Outages>>*
+** <<resilience_intro, Introduction>>
+** <<crisis, Modeling a Crisis>>
+* *<<conclusion, Conclusion>>*
+** <<sgftr, Sub-graph Fault Tolerant Routing>>
+** <<vivendi, Actual Use Case: Vivendi SFR>>
+* *<<appendix, Cypher Appendix>>*
+** <<finding_bridges, Finding Bridges>>
+** <<finding_subgraph, Finding and Labeling a Subgraph>>
+** <<finding_shortest, Finding the Shortest Path>>
+* *<<references, References>>*
+
+[[introduction]]
 == Introduction
 
 Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. This graphgist explores how we can use Cypher to find weak areas of a network and gain insight into how to efficiently allocate resources.  
 
+[[the_network]]
 == The Network
 
 In the following example network, one service node provides services to a variety of clients through a network of linked resources. Each link can be in one of three states: 'open', 'closed', or 'broken'. If a resource is using a link, it is considered 'closed', and no other resource can use it. If a resource is not using a link, it is considered 'open'. If something happens to a link that causes it to become unusable, the link is considered 'broken', and the network is at risk.  
@@ -46,10 +68,12 @@ RETURN *
 ----
 //graph
 
+[[redundancy]]
 == Uncovering the Need for Additional Redundancy
 
 Although most of the resources in our example network above are connected to the main service by multiple links, there are some subsections of the network that are connected by only one link (a bridge). Although this lack of redundancy might be necessary due to lack of funds or other reasons, if the bridge fails a large chunk of our network will suffer an outage. In short, redundancy is necessary both for the avoidance of outages and well-planned redundancy necessary to keep costs under control. 
 
+[[bridges]]
 == Finding and Dealing with Bridges
 
 A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, increases the number of connected components. In the example below, both edge a or b could be bridges, as their deletion would result in two connected components, only one of which would include Bob. 
@@ -70,8 +94,10 @@ _insert images of the bridges: the same as the image of the network but with the
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
+[[resilience]]
 == Resilience During Unplanned Network Outages
 
+[[resilience_intro]]
 === Introduction
 
 Let's take a look at the subgraph connected by the bridge between network resource 1 and 6. Let's label all of the nodes in this subgraph 'subgraph':
@@ -110,6 +136,7 @@ For this example, let's make the following assumptions about the network and the
  * During crisis all resources will be trying to reach the parent network simultaneously, causing network congestion
  - The network prefers shortest paths
 
+[[crisis]]
 === Modeling a Crisis
 
 _insert image of subcomponent with the vertices [3,1] and [3,2] broken, with resource 1 as the connection to the outside world_
@@ -244,8 +271,10 @@ ORDER BY `RESOURCE ID` ASC
 ----
 //table
 
-== Conclusion/Discussion
+[[conclusion]]
+== Conclusion
 
+[[sgftr]]
 === Sub-graph Fault Tolerant Routing
 
 _Subgraph Fault-Tolerant Routing (SFTR)_ is a strategy for planning for the inevitable - resource or connection outage. Sometimes a squirrel builds a nest in part of your network. Although we have to accept that parts of our networks will break, we can also determine which components will be able to reroute and which will have the potential to be catastrophic failures.
@@ -254,16 +283,20 @@ L+1 sub-graph routing is a strategy for routing dependable connections in optica
 
 A connection from node A to B in this scheme becomes “accepted”–in other words, identified as not potentially catastrophic–only if it is there is a path from A to B in all sub-graphs. Ideally, we would design a network in which there is always a path from A to B given any network failure.
 
+[[why_neo]]
 === Why Neo4j?
 
 The problem of modeling a live Telco network was a good fit for Neo4j’s solution, which uses nodes and relationships to describe assets on the network (switches, routers, cell towers), and the links between them (trunks, fiber optic cables, VPNs). Neo4j places no restrictions on the way the data is structured, or the data that is captured: it can model and represent the new network in a natural way. This extreme flexibility saves a great deal of time, and makes it possible to represent complex data and abstract concepts at the same time, within the same database. This is extremely powerful.
 
+[[vivendi]]
 == Actual Use Case: Vivendi SFR
 
 Vivendi SFR, the second largest communications company in France, tasked a 10-person project team to find a network management solution, and brought in software consultants from London-based OpenCredo to provide best practice expertise. The team selected the Neo4j graph database to build a proof of concept app that could pinpoint any “single point of failure” across the components of the SFR multi-system network.
 
+[[appendix]]
 == Cypher Appendix
 
+[[finding_bridges]]
 === Finding Bridges
 
 ----
@@ -276,10 +309,9 @@ By definition, a bridge is an edge, here incarnated by the relationship between 
 
 Since this is a small network with a maximum of one link per node, and GraphGists are artificially limited, we excluded paths in which (a) is connected to (b) between two or three hops of separation. 
 
-For example, the following path betwen (a) and (b) would be excluded, as (a) is 2 hops away from b:
+For example, a path such as  (a)--(b)--()--(a), would be excluded, as (a) is 2 hops away from b.
 
-_image of (a)--(b)--()--(a)_
-
+[[finding_subgraph]]
 === Finding and Labeling a Subgraph
 
 ----
@@ -293,6 +325,7 @@ Again, as this is a small network and we know two things: that the longest path 
 
 The query collects all paths between 1 and 3 hops away from resource 1, checks that all nodes in each path doesn't have resource_id 6, and labels all nodes in the filtered paths with the label 'subgraph'. 
 
+[[finding_shortest]]
 === Finding the Shortest Path
 ----
 MATCH p = shortestPath((a:subgraph)-[r*..3]-(b:subgraph))
@@ -303,6 +336,7 @@ RETURN relationships(p)
 
 Although shortestPath seems self-explanatory, it is important to note that there may be more than one 'shortestPath'.
 
+[[references]]
 == References
 
 - Frederick, Michael T., Pallab Datta, and Arun K. Somani. "Sub-Graph Routing: A generalized fault-tolerant strategy for link failures in WDM Optical Networks." Computer Networks 50.2 (2006): 181-199.
