@@ -69,7 +69,7 @@ RETURN *
 //graph
 
 
-image:images/whole_network.png[]
+image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network.png[]
 
 
 [[redundancy]]
@@ -82,7 +82,7 @@ Although most of the resources in our example network above are connected to the
 
 A bridge refers to an edge (or in Neo4j, a relationship), that when deleted, increases the number of connected components. In the example below, both edge a or b could be bridges, as their deletion would result in two connected components, only one of which would include Bob. 
 
-image:http://i.imgur.com/DvwWxMI.png[example]
+image::http://i.imgur.com/DvwWxMI.png[example]
 
 Let's find bridges in our network:
 
@@ -94,7 +94,7 @@ RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resou
 ----
 //table
 
-image::images/whole_network_bridges.png[]
+image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network_bridges.png[]
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
@@ -292,7 +292,7 @@ A connection from node A to B in this scheme becomes “accepted”–in other w
 The problem of modeling a live Telco network was a good fit for Neo4j’s solution, which uses nodes and relationships to describe assets on the network (switches, routers, cell towers), and the links between them (trunks, fiber optic cables, VPNs). Neo4j places no restrictions on the way the data is structured, or the data that is captured: it can model and represent the new network in a natural way. This extreme flexibility saves a great deal of time, and makes it possible to represent complex data and abstract concepts at the same time, within the same database. This is extremely powerful.
 
 [[vivendi]]
-== Use Case: image:images/SFR_logo.png[] Vivendi SFR 
+== Use Case: image::https://raw.githubusercontent.com/whatSocks/telco/master/images/SFR_logo.png[] Vivendi SFR 
 
 Owned by Vivendi, the French multinational media and telecommunications company, SFR  is the second largest telecommunications company in France, earning nearly 12 billion Euros in annual revenue. 
 
