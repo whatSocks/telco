@@ -63,7 +63,7 @@ Learn *a lot* more via [this GraphGist about GraphGists](http://gist.neo4j.org/?
 
 To turn your AsciiDoc into a graphgist, go to http://gist.neo4j.org/ and enter the url of your published AsciiDoc (for example, via GitHub or Dropbox) into the text field at the top right. You'll be sent to a GraphGist version of your AsciiDoc. 
 
-Save this new URL! They're a pain to keep track of.
+Save this new URL! They're a pain to keep track of. The template GraphGist can be found [here](http://gist.neo4j.org/?github-whatSocks%2Ftelco%2Ftemplate%2F%2FgraphGistTemplate.adoc).
 
 ## You're Done!
 
