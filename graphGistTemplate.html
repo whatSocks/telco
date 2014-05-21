@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="Asciidoctor 0.1.4">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Title of GraphGist</title>
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Title of GraphGist</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_table_of_contents">Table of Contents</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong><a href="#introduction">Introduction</a></strong></p>
+</li>
+<li>
+<p><strong><a href="#the_network">The Network</a></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#network_subtopic1">Network Subtopic 1</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><a href="#problem_1">Describing and Solving Problem 1</a></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#problem_1_subtopic1">Problem 1 Subtopic 1</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><a href="#problem_2">Describing and Solving Problem 2</a></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#problem_2_subtopic1">Problem 2 Subtopic 1</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><a href="#conclusion">Conclusion</a></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#conclusion_subtopic1">Conclusion Subtopic 1</a></p>
+</li>
+<li>
+<p><a href="#why_neo">Why Neo4j?</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><a href="#use_case">Use Case: Use Case Name</a></strong></p>
+</li>
+<li>
+<p><strong><a href="#appendix">Cypher Appendix</a></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#cypher_subtopic_1">Cypher Subtopic 1</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><a href="#references">References</a></strong></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction">Introduction to GraphGist</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Introduction content. Briefly introduce the graphgist and problems it solves.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_network">The Network used in GraphGist</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Briefly describe the network.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="cypher language-cypher">//create the nodes
+CREATE 	(`Bob`:sample), (`Gregory`:sample)
+
+//create the relationships
+CREATE	(`Bob`)-[:LINKS]-&gt;(`Gregory`)
+RETURN *</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Insert image of network here. Sample image below.</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="http://i.imgur.com/DvwWxMI.png" alt="example">
+</div>
+</div>
+<div class="sect2">
+<h3 id="network_subtopic1">Network Subtopic 1</h3>
+<div class="paragraph">
+<p>Should the network need further description, insert content here.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="problem_1">Describing and Solving Problem 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Describe and solve the problem with prose and Cypher!</p>
+</div>
+<div class="paragraph">
+<p><em>Insert image of problem/solution here. Sample image below.</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="http://i.imgur.com/DvwWxMI.png" alt="example">
+</div>
+</div>
+<div class="sect2">
+<h3 id="problem_1_subtopic1">Problem 1 Subtopic 1</h3>
+<div class="paragraph">
+<p>Describe and solve the problem with prose and Cypher!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="problem_2">Describing and Solving Problem 2</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Describe and solve the problem with prose and Cypher!</p>
+</div>
+<div class="paragraph">
+<p><em>Insert image of problem/solution here. Sample image below.</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="http://i.imgur.com/DvwWxMI.png" alt="example">
+</div>
+</div>
+<div class="sect2">
+<h3 id="problem_2_subtopic1">Problem 2 Subtopic 1</h3>
+<div class="paragraph">
+<p>Describe and solve the problem with prose and Cypher!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Problems solved, battles won&#8230;</p>
+</div>
+<div class="sect2">
+<h3 id="conclusion_subtopic1">Conclusion Subtopic 1</h3>
+
+</div>
+<div class="sect2">
+<h3 id="why_neo">Why Neo4j?</h3>
+<div class="paragraph">
+<p>Explain why Neo4j was used.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="use_case">Use Case: Use Case Name</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>logo of use case here</em></p>
+</div>
+<div class="paragraph">
+<p>Describe use case here.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="appendix">Cypher Appendix</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="cypher_subtopic_1">Cypher Subtopic 1</h3>
+<div class="listingblock">
+<div class="content">
+<pre>CYPHER HERE</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Explanation of non-trivial Cypher queries used in here.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="references">References</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>some sample references:</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Frederick, Michael T., Pallab Datta, and Arun K. Somani. "Sub-Graph Routing: A generalized fault-tolerant strategy for link failures in WDM Optical Networks." Computer Networks 50.2 (2006): 181-199.</p>
+</li>
+<li>
+<p><em><a href="http://en.wikipedia.org/wiki/Samuel_Johnson">Networks, Crowds, and Markets</a></em></p>
+</li>
+<li>
+<p><em><a href="http://jexp.de/blog/2014/03/sampling-a-neo4j-database/">Sampling a Neo4j Database</a></em></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2014-05-20 23:28:32 EDT
+</div>
+</div>
+</body>
+</html>

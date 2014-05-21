@@ -1,0 +1,126 @@
+= Title of GraphGist
+
+== Table of Contents
+
+* *<<introduction, Introduction>>*
+* *<<the_network, The Network>>*
+** <<network_subtopic1, Network Subtopic 1>>
+* *<<problem_1, Describing and Solving Problem 1>>*
+** <<problem_1_subtopic1, Problem 1 Subtopic 1>>
+* *<<problem_2, Describing and Solving Problem 2>>*
+** <<problem_2_subtopic1, Problem 2 Subtopic 1>>
+* *<<conclusion, Conclusion>>*
+** <<conclusion_subtopic1, Conclusion Subtopic 1>>
+** <<why_neo, Why Neo4j?>>
+* *<<use_case, Use Case: Use Case Name>>*
+* *<<appendix, Cypher Appendix>>*
+** <<cypher_subtopic_1, Cypher Subtopic 1>>
+* *<<references, References>>*
+
+[[introduction]]
+== Introduction to GraphGist
+
+Introduction content. Briefly introduce the graphgist and problems it solves. 
+
+
+[[the_network]]
+== The Network used in GraphGist
+
+Briefly describe the network. 
+
+
+//hide
+//setup
+[source,cypher]
+----
+//create the nodes
+CREATE 	(`Bob`:sample), (`Gregory`:sample)
+
+//create the relationships
+CREATE	(`Bob`)-[:LINKS]->(`Gregory`)
+RETURN *
+----
+
+_Insert image of network here. Sample image below._
+
+image::http://i.imgur.com/DvwWxMI.png[example]
+
+
+[[network_subtopic1]]
+=== Network Subtopic 1
+
+Should the network need further description, insert content here. 
+
+
+[[problem_1]]
+== Describing and Solving Problem 1
+
+Describe and solve the problem with prose and Cypher!
+
+_Insert image of problem/solution here. Sample image below._
+
+image::http://i.imgur.com/DvwWxMI.png[example]
+
+
+
+[[problem_1_subtopic1]]
+=== Problem 1 Subtopic 1
+
+Describe and solve the problem with prose and Cypher!
+
+[[problem_2]]
+== Describing and Solving Problem 2
+
+Describe and solve the problem with prose and Cypher!
+
+_Insert image of problem/solution here. Sample image below._
+
+image::http://i.imgur.com/DvwWxMI.png[example]
+
+
+[[problem_2_subtopic1]]
+=== Problem 2 Subtopic 1
+
+Describe and solve the problem with prose and Cypher!
+
+
+[[conclusion]]
+== Conclusion
+
+Problems solved, battles won...
+
+[[conclusion_subtopic1]]
+=== Conclusion Subtopic 1
+
+[[why_neo]]
+=== Why Neo4j?
+
+Explain why Neo4j was used. 
+
+[[use_case]]
+== Use Case: Use Case Name
+
+_logo of use case here_
+
+Describe use case here. 
+
+[[appendix]]
+== Cypher Appendix
+
+[[cypher_subtopic_1]]
+=== Cypher Subtopic 1
+
+----
+CYPHER HERE
+----
+
+Explanation of non-trivial Cypher queries used in here.
+
+[[references]]
+== References
+
+_some sample references:_
+
+- Frederick, Michael T., Pallab Datta, and Arun K. Somani. "Sub-Graph Routing: A generalized fault-tolerant strategy for link failures in WDM Optical Networks." Computer Networks 50.2 (2006): 181-199.
+- 'http://en.wikipedia.org/wiki/Samuel_Johnson[Networks, Crowds, and Markets]'
+- 'http://jexp.de/blog/2014/03/sampling-a-neo4j-database/[Sampling a Neo4j Database]'
