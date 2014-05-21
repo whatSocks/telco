@@ -1,7 +1,5 @@
 = Telco Network Management Using A Graph Database
 
-'''
-
 == Table of Contents
 
 * *<<introduction, Introduction>>*
@@ -13,6 +11,7 @@
 ** <<crisis, Modeling a Crisis>>
 * *<<conclusion, Conclusion>>*
 ** <<sgftr, Sub-graph Fault Tolerant Routing>>
+** <why_neo, Why Neo4j?>>
 * *<<vivendi, Actual Use Case: Vivendi SFR>>*
 * *<<appendix, Cypher Appendix>>*
 ** <<finding_bridges, Finding Bridges>>
@@ -66,8 +65,6 @@ CREATE	(`1`)-[:LINKS {status:'open'}]->(`2`),(`1`)-[:LINKS {status:'open'}]->(`3
 			(`15`)-[:LINKS {status:'open'}]->(`9`)
 RETURN *
 ----
-//graph
-
 
 image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network.PNG[]
 
