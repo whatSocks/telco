@@ -28,6 +28,9 @@ Introduction content. Briefly introduce the graphgist and problems it solves.
 
 Briefly describe the network. 
 
+Describe your nodes. 
+
+Describe your relationships. 
 
 //hide
 //setup
