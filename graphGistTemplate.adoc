@@ -114,7 +114,9 @@ Describe use case here.
 === Cypher Subtopic 1
 
 ----
-CYPHER HERE
+//CYPHER HERE. For example:
+MATCH (a:sample)
+RETURN a
 ----
 
 Explanation of non-trivial Cypher queries used in here.
