@@ -11,7 +11,7 @@
 ** <<crisis, Modeling a Crisis>>
 * *<<conclusion, Conclusion>>*
 ** <<sgftr, Sub-graph Fault Tolerant Routing>>
-** <why_neo, Why Neo4j?>>
+** <<why_neo, Why Neo4j?>>
 * *<<vivendi, Actual Use Case: Vivendi SFR>>*
 * *<<appendix, Cypher Appendix>>*
 ** <<finding_bridges, Finding Bridges>>
