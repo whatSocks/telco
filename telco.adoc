@@ -110,6 +110,7 @@ WHERE ALL (n IN nodes(path) WHERE NOT n.resource_id=6)
 FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
+//graph_result
 
 image::https://raw.githubusercontent.com/whatSocks/telco/master/images/subgraph.PNG[]
 
