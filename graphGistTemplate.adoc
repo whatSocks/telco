@@ -30,13 +30,13 @@ _Briefly describe the network._
 
 The network in this example is a social knowledge graph.  
 
-_Describe your nodes and relationships.
+_Describe your nodes and relationships._
 
-There are two types of nodes, users and topics. Users are connected to their buddies by the `IS_BUDDY` relationship, and are connected to topics by the `KNOWS_ABOUT` relationship. In this example, if Jacob is buddies with David, we're assuming that David also considers Jacob his buddy. Depending on what we want to model, we might have accepted a scenario where Jacob is buddies with David, but David is not buddies with Jacob. 
+_There are two types of nodes, users and topics. Users are connected to their buddies by the `IS_BUDDY` relationship, and are connected to topics by the `KNOWS_ABOUT` relationship. In this example, if Jacob is buddies with David, we're assuming that David also considers Jacob his buddy. Depending on what we want to model, we might have accepted a scenario where Jacob is buddies with David, but David is not buddies with Jacob._ 
 
-Each `KNOWS_ABOUT` relationship has the properties `correct` and `total`, reflecting how many times the user has been asked about a topic, and of these times, how many times the user has responded correctly.  Every edge is initialized with a default of `{correct:1, total:2 }`._
+_Each `KNOWS_ABOUT` relationship has the properties `correct` and `total`, reflecting how many times the user has been asked about a topic, and of these times, how many times the user has responded correctly.  Every edge is initialized with a default of `{correct:1, total:2 }`._
 
-==
+
 //hide
 //setup
 [source,cypher]
