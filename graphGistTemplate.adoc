@@ -38,7 +38,7 @@ _The network in this example is a social knowledge graph._
 
 === _Describe your nodes and relationships._
 
-==== Sample Scenario
+==== _Sample Scenario_
 
 _There are two types of nodes, users and topics. Users are connected to their buddies by the `IS_BUDDY` relationship, and are connected to topics by the `KNOWS_ABOUT` relationship. In this example, if Jacob is buddies with David, we're assuming that David also considers Jacob his buddy. Depending on what we want to model, we might have accepted a scenario where Jacob is buddies with David, but David is not buddies with Jacob._ 
 
