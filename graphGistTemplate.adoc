@@ -26,7 +26,7 @@
 [[introduction]]
 == Introduction to GraphGist
 
-Introduction content. Briefly introduce the graphgist and problems it solves. 
+_Introduction content. Briefly introduce the graphgist and problems it solves._ 
 
 
 [[the_network]]
@@ -78,7 +78,6 @@ CREATE (user_1)-[:KNOWS_ABOUT {correct:1, total:2 }]->(topic_10), (user_1)-[:KNO
 RETURN *
 ----
 // graph_result
-
 
 
 _If you need more clarification, insert image of network here. Sample image below._
@@ -138,7 +137,7 @@ image::http://i.imgur.com/DvwWxMI.png[example]
 [[conclusion]]
 == Conclusion
 
-Problems solved, battles won...Jacob has a handful of friends interested in hyraxes. 
+_Problems solved, battles won...Jacob has a handful of friends interested in hyraxes._
 
 [[conclusion_subtopic1]]
 === Conclusion Subtopic 1
@@ -146,14 +145,14 @@ Problems solved, battles won...Jacob has a handful of friends interested in hyra
 [[why_neo]]
 === Why Neo4j?
 
-Explain why Neo4j was used. 
+_Explain why Neo4j was used._
 
 [[use_case]]
 == Use Case: Use Case Name
 
 _logo of use case here_
 
-Describe use case here. 
+_Describe use case here._
 
 [[appendix]]
 == Cypher Appendix
@@ -167,7 +166,7 @@ MATCH (a:sample)
 RETURN a
 ----
 
-Explanation of non-trivial Cypher queries used in here.
+_Explanation of non-trivial Cypher queries used._
 
 [[references]]
 == References
