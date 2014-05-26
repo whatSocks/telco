@@ -103,7 +103,7 @@ image::http://upload.wikimedia.org/wikipedia/commons/a/af/Procaviaskull.png[a hy
 ----
 MATCH (t:TOPIC)-[:KNOWS_ABOUT]-(a:USER)-[:IS_BUDDY]-(j:USER)
 WHERE j.name = 'Jacob' AND t.name = 'hyrax'
-RETURN DISTINCT a.name
+RETURN DISTINCT a.name as `Knows about Procavia capensis`
 ----
 // table
 
