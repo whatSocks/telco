@@ -145,6 +145,9 @@ _Problems solved, battles won...Jacob has a handful of friends interested in hyr
 [[why_neo]]
 === Why Neo4j?
 
+image:https://dl.dropboxusercontent.com/u/14493611/neo4j-logo.png[Neo4j Logo]
+
+
 _Explain why Neo4j was used._
 
 [[use_case]]
