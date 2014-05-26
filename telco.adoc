@@ -35,6 +35,10 @@ Telecommunication companies need a way to predict and warn customers in advance 
 
 In the following example network, one service node provides services to a variety of clients through a network of linked resources. Each link can be in one of three states: 'open', 'closed', or 'broken'. If a resource is using a link, it is considered 'closed', and no other resource can use it. If a resource is not using a link, it is considered 'open'. If something happens to a link that causes it to become unusable, the link is considered 'broken', and the network is at risk.  
 
+*The Nodes:* Although abstract in this example, nodes in this model represent anything that receives, sends, or relays information. In the real world, they would include but not be limited to datacenters, switchboards, hospitals, restaurants. In this Neo4j graph, the majority of nodes carry the RESOURCE label. There is one node with a SERVICE label. Everything connected to the SERVICE node is part of the telecommunication network. 
+
+*The Edges:* Also abstract in this example, the edges in this model represent the structures through which information is passed. In the real world, these could be telephone wires, wireless signals, ethernet cables, or similar. In this Neo4j graph, edges carry the LINKS label. Although inherently directional, this assumes all LINKS are bidirectional. 
+
 //hide
 //setup
 [source,cypher]
@@ -73,13 +77,10 @@ RETURN *
 ----
 //graph_result
 
-image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network.PNG[]
-
-
 [[redundancy]]
 == Uncovering the Need for Additional Redundancy
 
-Although most of the resources in our example network above are connected to the main service by multiple links, there are some subsections of the network that are connected by only one link (a bridge). Although this lack of redundancy might be necessary due to lack of funds or other reasons, if the bridge fails a large chunk of our network will suffer an outage. In short, redundancy is necessary both for the avoidance of outages and well-planned redundancy necessary to keep costs under control. 
+Although most of the resources in our example network above are connected to the main service by multiple links, there are some subsections of the network that are connected by only one link (a bridge). Although this lack of redundancy might be necessary due to lack of funds or other reasons, if the bridge fails (a fire melts the cables connecting two resources, a hurricane takes out a datacenter) a large chunk of our network will suffer an outage. In short, redundancy is necessary both for the avoidance of outages and well-planned redundancy necessary to keep costs under control. 
 
 [[bridges]]
 == Finding and Dealing with Bridges
@@ -97,8 +98,7 @@ WHERE NOT (a)-[*2..3]-(b)
 RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resource_id AS `Endpoint 2 ID`
 ----
 //table
-
-image::https://raw.githubusercontent.com/whatSocks/telco/master/images/whole_network_bridges.PNG[]
+//graph_result
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
@@ -120,8 +120,6 @@ FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 //graph_result
-
-image::https://raw.githubusercontent.com/whatSocks/telco/master/images/subgraph.PNG[]
 
 [source,cypher]
 ----
@@ -149,8 +147,7 @@ For this example, let's make the following assumptions about the network and the
 [[crisis]]
 === Modeling a Crisis
 
-
-==== Breaking the LINKS between 3 and 1 and 3 and 2
+==== Breaking the LINKs between 3 and 1 and 3 and 2
 
 [source,cypher]
 ----
@@ -171,7 +168,7 @@ RETURN a.resource_id AS `FIRST RESOURCE`, r.status AS `LINK`, b.resource_id AS `
 ----
 //table
 
-===== All RESOURCEs Attempt to Fine a Path to RESOURCE 1
+===== All RESOURCEs Attempt to Find a Path to RESOURCE 1
 
 Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
@@ -311,7 +308,7 @@ SFR needed a way to predict and warn customers in advance of any service interru
 == Cypher Appendix
 
 [[finding_bridges]]
-=== Finding Bridges
+=== Finding Bridges between RESOURCEs
 
 ----
 MATCH path = (a:RESOURCE)-[r0]->(b:RESOURCE)
