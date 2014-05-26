@@ -98,7 +98,6 @@ WHERE NOT (a)-[*2..3]-(b)
 RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resource_id AS `Endpoint 2 ID`
 ----
 //table
-//graph_result
 
 Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
@@ -120,6 +119,8 @@ FOREACH (n IN nodes(path)| SET n :subgraph)
 RETURN path
 ----
 //graph_result
+
+The members of subgraph _SUBGRAPH_
 
 [source,cypher]
 ----
@@ -191,7 +192,7 @@ WHERE a.resource_id = 1 AND b.resource_id = 2 AND ALL (r1 IN relationships(p) WH
 FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN relationships(p)
 ----
-//graph_resource
+//table
 
 Now resource 3 tries to reach resource 1 through the open links. If it succeeds, it too sets all links on the path to 1 as 'closed'. Let's take a look at the options:
 
@@ -212,7 +213,7 @@ WHERE a.resource_id = 1 AND b.resource_id = 3 AND ALL (r1 IN relationships(p) WH
 FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN DISTINCT relationships(p)
 ----
-//graph_resource
+//table
 
 Now resource 4 attempts to reach resource 1:
 
@@ -238,7 +239,7 @@ All possible paths to resource 1 are closed to resource 5 and resource 4.
 
 In the case of network congestion and the failure of two links, two resources are unable to reach the service. As we have only enough resources for one additional link from the network, we now have to determine an appropriate location for the new link. 
 
-*_Planning the new link_*
+==== Planning the new link
 
 Assuming resources 3, 4, and 5 are of equal priority, and that the links between 1 and 3 and 2 and 3 will continue to have problems with connectivity, we still have a few options in which to place our new link. Recall that in the intact network resource 5 has the longest path to the network. 
 
