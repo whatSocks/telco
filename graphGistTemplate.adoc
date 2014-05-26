@@ -26,11 +26,11 @@ Introduction content. Briefly introduce the graphgist and problems it solves.
 [[the_network]]
 == The Network used in GraphGist
 
-_Briefly describe the network._
+_*Briefly describe the network.*_
 
-The network in this example is a social knowledge graph.  
+_The network in this example is a social knowledge graph._  
 
-_Describe your nodes and relationships._
+_*Describe your nodes and relationships.*_
 
 _There are two types of nodes, users and topics. Users are connected to their buddies by the `IS_BUDDY` relationship, and are connected to topics by the `KNOWS_ABOUT` relationship. In this example, if Jacob is buddies with David, we're assuming that David also considers Jacob his buddy. Depending on what we want to model, we might have accepted a scenario where Jacob is buddies with David, but David is not buddies with Jacob._ 
 
@@ -83,29 +83,39 @@ image::http://i.imgur.com/DvwWxMI.png[example]
 [[network_subtopic1]]
 === Network Subtopic 1
 
-Should the network need further description, insert content here. 
+_Should the network need further description, insert content here._
 
 
 [[problem_1]]
 == Describing and Solving Problem 1
 
-Describe and solve the problem with prose and Cypher!
+_*Describe and solve the problem with prose and Cypher!*_
+
+_Sample Problem: How do we find a user that's buddies with Jacob and knows about manatees?_
 
 _Insert image of problem/solution here. Sample image below._
 
-image::http://i.imgur.com/DvwWxMI.png[example]
+image::http://upload.wikimedia.org/wikipedia/commons/6/6f/FL_fig04.jpg[a manatee]
 
-
+//setup
+[source,cypher]
+----
+MATCH (t:TOPIC)-(a:USER)-[:IS_BUDDY]-(j:USER)
+WHERE j.name = `Jacob` AND t.name = `manatee`
+RETURN a.name
+----
+// table
 
 [[problem_1_subtopic1]]
 === Problem 1 Subtopic 1
 
-Describe and solve the problem with prose and Cypher!
+_*Describe and solve the problem with prose and Cypher!*_
+
 
 [[problem_2]]
 == Describing and Solving Problem 2
 
-Describe and solve the problem with prose and Cypher!
+_*Describe and solve the problem with prose and Cypher!*_
 
 _Insert image of problem/solution here. Sample image below._
 
@@ -115,13 +125,13 @@ image::http://i.imgur.com/DvwWxMI.png[example]
 [[problem_2_subtopic1]]
 === Problem 2 Subtopic 1
 
-Describe and solve the problem with prose and Cypher!
+_*Describe and solve the problem with prose and Cypher!*_
 
 
 [[conclusion]]
 == Conclusion
 
-Problems solved, battles won...
+Problems solved, battles won...Jacob has a handful of friends interested in manatees. 
 
 [[conclusion_subtopic1]]
 === Conclusion Subtopic 1
