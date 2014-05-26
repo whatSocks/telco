@@ -95,7 +95,7 @@ _Sample Problem: How do we find a user that's buddies with Jacob and knows about
 
 _Insert image of problem/solution here. Sample image below._
 
-image::http://upload.wikimedia.org/wikipedia/commons/0/0c/Yellow-spotted_Rock_Hyrax.jpg[a hyrax]
+image::http://upload.wikimedia.org/wikipedia/commons/a/af/Procaviaskull.png[a hyrax]
 
 
 //setup
