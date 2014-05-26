@@ -1,4 +1,10 @@
 = Title of GraphGist
+:neo4j-version: 2.1.0
+:author: Your Name Here
+:description: A sentence description.
+:twitter: @yourTwitter,
+:tags: domain:animals, use-case:social network 
+
 
 == Table of Contents
 
@@ -132,7 +138,7 @@ image::http://i.imgur.com/DvwWxMI.png[example]
 [[conclusion]]
 == Conclusion
 
-Problems solved, battles won...Jacob has a handful of friends interested in manatees. 
+Problems solved, battles won...Jacob has a handful of friends interested in hyraxes. 
 
 [[conclusion_subtopic1]]
 === Conclusion Subtopic 1
