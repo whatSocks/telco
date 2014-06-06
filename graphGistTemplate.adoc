@@ -79,7 +79,7 @@ CREATE (user_1)-[:KNOWS_ABOUT {correct:1, total:2 }]->(topic_10), (user_1)-[:KNO
 
 RETURN *
 ----
-// graph_result
+\\graph_result
 
 
 _If you need more clarification, insert image of network here. Sample image below._
@@ -112,7 +112,7 @@ MATCH (t:TOPIC)-[:KNOWS_ABOUT]-(a:USER)-[:IS_BUDDY]-(j:USER)
 WHERE j.name = 'Jacob' AND t.name = 'hyrax'
 RETURN DISTINCT a.name as `Knows about Procavia capensis`
 ----
-// table
+\\table
 
 [[problem_1_subtopic1]]
 === Problem 1 Subtopic 1
