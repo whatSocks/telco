@@ -99,7 +99,7 @@ RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resou
 ----
 //table
 
-Naturally, if anything happens to any of these channels a chunk of of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
+Naturally, if anything happens to any of these channels a chunk of our network will go down. Ideally, we'd have redundancies and multiple backups to take care of any possible outage. However, resources and the implementation of resources are expensive. 
 
 [[resilience]]
 == Resilience During Unplanned Network Outages
@@ -140,7 +140,7 @@ The need for additional connections evident: if a drunk driver or nest of squirr
 For this example, let's make the following assumptions about the network and the network owners' needs:
 
 - While resource A is communicating with resource B through a link or set of channels, no other resource can use the link for the duration of the communication. 
-- When it rains it pours: We are trying to determine where to place additional links based on the worst case scenario. 
+- When it rains it pours: We are trying to determine where to place additional links based on the worst-case scenario. 
  * More than one channel will fail at the same time, and we know the channels between resource 3 and 1 and 3 and 2 are in a particularly vulnerable area. 
  * During crisis all resources will be trying to reach the parent network simultaneously, causing network congestion
  - The network prefers shortest paths
@@ -173,7 +173,7 @@ RETURN a.resource_id AS `FIRST RESOURCE`, r.status AS `LINK`, b.resource_id AS `
 
 Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
-First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at lengths of the possible paths:
+First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as _closed_. Let's take a look at lengths of the possible paths:
 
 [source,cypher]
 ----
@@ -317,7 +317,7 @@ WHERE NOT (a)-[*2..3]-(b)
 RETURN DISTINCT a.resource_id AS `Endpoint 1 ID`, r0.status AS `Status`, b.resource_id AS `Endpoint 2 ID`
 ----
 
-By definition, a bridge is an edge, here incarnated by the relationship between (a) and (b): "(a:RESOURCE)-[r0]->(b:RESOURCE)". How did we eliminate edjes between (a) and arbitrary node (b)s that were part of a cycle, and therefore, not bridges?
+By definition, a bridge is an edge, here incarnated by the relationship between (a) and (b): "(a:RESOURCE)-[r0]->(b:RESOURCE)". How did we eliminate edges between (a) and arbitrary node (b)s that were part of a cycle, and therefore, not bridges?
 
 Since this is a small network with a maximum of one link per node, and GraphGists are artificially limited, we excluded paths in which (a) is connected to (b) between two or three hops of separation. 
 
@@ -346,7 +346,7 @@ FOREACH (x IN relationships(p) | SET x.status = 'closed')
 RETURN relationships(p)
 ----
 
-Although shortestPath seems self-explanatory, it is important to note that there may be more than one 'shortestPath' (for example, two paths of length 2 might be the shortest in the network), and the one returned by the stock query may not be the one you are interested in. Try using it's allShortestPaths instead. 
+Although shortestPath seems self-explanatory, it is important to note that there may be more than one 'shortestPath' (for example, two paths of length 2 might be the shortest in the network), and the one returned by the stock query may not be the one you are interested in. Try using allShortestPaths instead. 
 
 [[references]]
 == References
