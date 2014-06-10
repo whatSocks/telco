@@ -28,7 +28,7 @@
 [[introduction]]
 == Introduction
 
-Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. This graphgist explores how we can use Cypher to find weak areas of a network and gain insight into how to efficiently allocate resources.  
+Telecommunication companies need a way to predict and warn customers in advance of any service interruptions in order to maintain customer service agreements and avoid financial penalties of unplanned downtime. This GraphGist explores how we can use Cypher to find weak areas of a network and gain insight into how to efficiently allocate resources.  
 
 [[the_network]]
 == Create the Network
@@ -37,7 +37,7 @@ In the following example network, one service node provides services to a variet
 
 *The Nodes:* Although abstract in this example, nodes in this model represent anything that receives, sends, or relays information. In the real world, they would include but not be limited to datacenters, switchboards, hospitals, restaurants. In this Neo4j graph, the majority of nodes carry the RESOURCE label. There is one node with a SERVICE label. Everything connected to the SERVICE node is part of the telecommunication network. 
 
-*The Edges:* Also abstract in this example, the edges in this model represent the structures through which information is passed. In the real world, these could be telephone wires, wireless signals, ethernet cables, or similar. In this Neo4j graph, edges carry the LINKS label. Although inherently directional, this assumes all LINKS are bidirectional. 
+*The Edges:* Also abstract in this example, the edges in this model represent the structures through which information is passed. In the real world, these could be telephone wires, wireless signals, Ethernet cables, or similar. In this Neo4j graph, edges carry the LINKS label. Although inherently directional, this assumes all LINKS are bidirectional. 
 
 //hide
 //setup
@@ -173,7 +173,7 @@ RETURN a.resource_id AS `FIRST RESOURCE`, r.status AS `LINK`, b.resource_id AS `
 
 Although in the real world this would happen near simultaneously, let's look at the paths one by one. 
 
-First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as _closed_. Let's take a look at lengths of the possible paths:
+First, resource 2 will attempt to reach resource 1 through the open links. If it succeeds, it sets all links on the path to 1 as 'closed'. Let's take a look at lengths of the possible paths:
 
 [source,cypher]
 ----
@@ -246,19 +246,19 @@ Assuming resources 3, 4, and 5 are of equal priority, and that the links between
 .A link at 5:
 
 - Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 1)
-- Allows resource 3 to contact the network without blocking resource 4s' access to the network
+- Allows resource 3 to contact the network without blocking resource 4's access to the network
 - In the scenario described above (congested network with weak links down), one resource (either 3 or 5) will still be unable to access the network 
 
 .A link at 4:
 
 - Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 2)
-- Does not allows resource 3 to contact the network without blocking resource 4s' access to the network
+- Does not allows resource 3 to contact the network without blocking resource 4's access to the network
 - In the scenario described above (congested network with weak links down), one resource (3) will still be unable to access the network 
 
 .A link at 3:
 
 - Gives resource 5 a shorter path to the network when there are no outages (path of length 3 to path of length 2)
-- Allows resource 3 to contact the network without blocking resource 4s' access to the network
+- Allows resource 3 to contact the network without blocking resource 4's access to the network
 - In the scenario described above (congested network with weak links down), one resource (either 4 or 5) will still be unable to access the network 
 
 Since all options result in one resource being blocked and placing a link at resource 5 results in the shortest path for resource 5 in both the damaged and intact network, let's place the new link at resource 5. 
@@ -288,7 +288,7 @@ _Subgraph Fault-Tolerant Routing (SFTR)_ is a strategy for planning for the inev
 
 L+1 sub-graph routing is a strategy for routing dependable connections in optical networks. In this approach each network is mapped into L distinct sub-graphs resulting from the removal of links (in this example, only one link) from the original network.
 
-A connection from node A to B in this scheme becomes “accepted”–in other words, identified as not potentially catastrophic–only if it is there is a path from A to B in all sub-graphs. Ideally, we would design a network in which there is always a path from A to B given any network failure.
+A connection from node A to B in this scheme becomes “accepted”–-in other words, identified as not potentially catastrophic–-only if it is there is a path from A to B in all sub-graphs. Ideally, we would design a network in which there is always a path from A to B given any network failure.
 
 [[why_neo]]
 === Why Neo4j?
